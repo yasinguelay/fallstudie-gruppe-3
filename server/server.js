@@ -10,12 +10,15 @@ const PORT = process.env.PORT || 5000;
 const app = express();
 
 app.use(cors());
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(require('./routes/routes'));
+app.use(express.static('public'));
+app.use(require('./routes/filme'));
+app.use(require('./routes/saele'));
+app.use(require('./routes/vorstellungen'));
 
 // Global error handling
-app.use(function (err, _req, res) {
+app.use(function (err, _req, res, _next) {
   console.error(err.stack);
   res.status(500).send('Something broke!');
 });
