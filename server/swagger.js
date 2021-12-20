@@ -10,7 +10,7 @@ const doc = {
     description:
       'API Dokumentation zur Anbindung von Frontends für das Kinoticketreservierungssystem.',
   },
-  host: 'localhost:5000',
+  host: 'api-demo-gruppe-3.herokuapp.com',
   basePath: '/',
   schemes: ['http', 'https'],
   consumes: ['application/json'],
