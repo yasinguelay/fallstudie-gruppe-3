@@ -121,7 +121,7 @@ shows
       newShowStartTime.getTime() + 60000 * (req.body.dauer + breakAfterShow)
     );
     const toLocaleTimeStringLimitation = [
-      [],
+      'de-DE',
       { hour: '2-digit', minute: '2-digit' },
     ];
 
