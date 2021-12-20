@@ -19,17 +19,17 @@ const doc = {
     {
       name: 'Film',
       description:
-        "Folgende Endpoints können genutzt werden, um mit der Ressoruce 'Film' zu interagieren.",
+        "Folgende Endpoints können genutzt werden, um mit der Ressource 'Film' zu interagieren.",
     },
     {
       name: 'Vorstellung',
       description:
-        "Folgende Endpoints können genutzt werden, um mit der Ressoruce 'Vorstellung' zu interagieren.",
+        "Folgende Endpoints können genutzt werden, um mit der Ressource 'Vorstellung' zu interagieren.",
     },
     {
       name: 'Saal',
       description:
-        "Folgende Endpoints können genutzt werden, um mit der Ressoruce 'Saal' zu interagieren.",
+        "Folgende Endpoints können genutzt werden, um mit der Ressource 'Saal' zu interagieren.",
     },
   ],
   /* securityDefinitions: {
