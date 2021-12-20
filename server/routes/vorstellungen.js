@@ -5,6 +5,19 @@ const shows = express.Router();
 shows
   .route('/vorstellungen')
   .get(function (req, res) {
+    // #swagger.tags = ['Vorstellung']
+    // #swagger.description = 'Vorstellungen für einen Tag abrufen.'
+    /* #swagger.parameters['getShows'] = {
+               in: 'body',
+               description: 'Abzurufende Vorstellungen für einen Tag.',
+               required: true,
+               type: 'object',
+               schema: { $ref: "#/definitions/VorstellungenAbrufen" }
+        } */
+    /* #swagger.responses[200] = { 
+               schema: { $ref: "#/definitions/Vorstellungen" }
+        } */
+
     const dbConnect = dbo.getDb();
     const queryPipeline = [
       {
@@ -49,6 +62,16 @@ shows
       });
   })
   .post(async function (req, res) {
+    // #swagger.tags = ['Vorstellung']
+    // #swagger.description = 'Vorstellung anlegen.'
+    /* #swagger.parameters['createShow'] = {
+               in: 'body',
+               description: 'Anzulegender Film.',
+               required: true,
+               type: 'object',
+               schema: { $ref: "#/definitions/VorstellungAnlegen" }
+        } */
+
     const dbConnect = dbo.getDb();
     const cinemaOpeningTime = '12:30';
     const cinemaClosingTime = '23:30';
@@ -165,6 +188,15 @@ shows
   });
 
 shows.route('/vorstellungen/:saal/:startzeit').delete(function (req, res) {
+  // #swagger.tags = ['Vorstellung']
+  // #swagger.description = 'Vorstellung löschen.'
+  /* #swagger.parameters['deleteShow'] = {
+               in: 'body',
+               description: 'Zu entfernende Vorstellung.',
+               required: true,
+               type: 'object',
+               schema: { $ref: "#/definitions/VorstellungLöschen" }
+        } */
   const dbConnect = dbo.getDb();
   const showToDelete = { titel: req.body.film };
   const showToDeleteQuery = {

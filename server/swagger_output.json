@@ -1,0 +1,429 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Fallstudie-Gruppe-3",
+    "description": "API Dokumentation zur Anbindung von Frontends für das Kinoticketreservierungssystem."
+  },
+  "host": "localhost:5000",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "Film",
+      "description": "Folgende Endpoints können genutzt werden, um mit der Ressoruce 'Film' zu interagieren."
+    },
+    {
+      "name": "Vorstellung",
+      "description": "Folgende Endpoints können genutzt werden, um mit der Ressoruce 'Vorstellung' zu interagieren."
+    },
+    {
+      "name": "Saal",
+      "description": "Folgende Endpoints können genutzt werden, um mit der Ressoruce 'Saal' zu interagieren."
+    }
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/filme": {
+      "get": {
+        "tags": [
+          "Film"
+        ],
+        "description": "Alle Filme abrufen.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Film"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Film"
+        ],
+        "description": "Film anlegen.",
+        "parameters": [
+          {
+            "name": "newFilm",
+            "in": "body",
+            "description": "Anzulegender Film.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/FilmAnlegen"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/filme/{titel}": {
+      "delete": {
+        "tags": [
+          "Film"
+        ],
+        "description": "Film löschen.",
+        "parameters": [
+          {
+            "name": "titel",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/saele": {
+      "post": {
+        "tags": [
+          "Saal"
+        ],
+        "description": "Saal anlegen.",
+        "parameters": [
+          {
+            "name": "newHall",
+            "in": "body",
+            "description": "Anzulegender Saal.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SaalAnlegen"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/saele/{nummer}": {
+      "delete": {
+        "tags": [
+          "Saal"
+        ],
+        "description": "Saal löschen.",
+        "parameters": [
+          {
+            "name": "nummer",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/vorstellungen": {
+      "get": {
+        "tags": [
+          "Vorstellung"
+        ],
+        "description": "Vorstellungen für einen Tag abrufen.",
+        "parameters": [
+          {
+            "name": "getShows",
+            "in": "body",
+            "description": "Abzurufende Vorstellungen für einen Tag.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/VorstellungenAbrufen"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Vorstellungen"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Vorstellung"
+        ],
+        "description": "Vorstellung anlegen.",
+        "parameters": [
+          {
+            "name": "createShow",
+            "in": "body",
+            "description": "Anzulegender Film.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/VorstellungAnlegen"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/vorstellungen/{saal}/{startzeit}": {
+      "delete": {
+        "tags": [
+          "Vorstellung"
+        ],
+        "description": "Vorstellung löschen.",
+        "parameters": [
+          {
+            "name": "saal",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startzeit",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "deleteShow",
+            "in": "body",
+            "description": "Zu entfernende Vorstellung.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/VorstellungLöschen"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Film": {
+      "type": "object",
+      "properties": {
+        "titel": {
+          "type": "string",
+          "example": "Inception"
+        },
+        "bild": {
+          "type": "string",
+          "example": "https://imdb-api.com/images/original/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_Ratio0.6762_AL_.jpg"
+        },
+        "dauer": {
+          "type": "number",
+          "example": 148
+        },
+        "vorstellungen": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "saal": {
+                "type": "number",
+                "example": 1
+              },
+              "startzeit": {
+                "type": "string",
+                "example": "2021-12-19T16:00"
+              },
+              "sitzplaetze": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "reihe": {
+                      "type": "string",
+                      "example": "A"
+                    },
+                    "nummer": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "sitzart": {
+                      "type": "string",
+                      "example": "einzel"
+                    },
+                    "reserviert": {
+                      "type": "boolean",
+                      "example": false
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "FilmAnlegen": {
+      "type": "object",
+      "properties": {
+        "titel": {
+          "type": "string",
+          "example": "Django Unchained"
+        }
+      },
+      "required": [
+        "titel"
+      ]
+    },
+    "SaalAnlegen": {
+      "type": "object",
+      "properties": {
+        "nummer": {
+          "type": "number",
+          "example": 1
+        },
+        "sitzplaetze": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "reihe": {
+                "type": "string",
+                "example": "A"
+              },
+              "nummer": {
+                "type": "number",
+                "example": 1
+              },
+              "sitzart": {
+                "type": "string",
+                "example": "einzel"
+              },
+              "reserviert": {
+                "type": "boolean",
+                "example": false
+              }
+            },
+            "required": [
+              "reihe",
+              "nummer",
+              "sitzart",
+              "reserviert"
+            ]
+          }
+        }
+      },
+      "required": [
+        "nummer",
+        "sitzplaetze"
+      ]
+    },
+    "Vorstellungen": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "titel": {
+            "type": "string",
+            "example": "Django Unchained"
+          },
+          "startzeit": {
+            "type": "string",
+            "example": "2021-12-19T13:00"
+          }
+        }
+      }
+    },
+    "VorstellungenAbrufen": {
+      "type": "object",
+      "properties": {
+        "saalnummer": {
+          "type": "number",
+          "example": 1
+        },
+        "startzeit": {
+          "type": "string",
+          "example": "2021-12-19T00:00"
+        }
+      },
+      "required": [
+        "saalnummer",
+        "startzeit"
+      ]
+    },
+    "VorstellungAnlegen": {
+      "type": "object",
+      "properties": {
+        "saal": {
+          "type": "number",
+          "example": 1
+        },
+        "startzeit": {
+          "type": "string",
+          "example": "2021-12-19T00:00"
+        },
+        "film": {
+          "type": "string",
+          "example": "Inception"
+        },
+        "dauer": {
+          "type": "number",
+          "example": 148
+        }
+      },
+      "required": [
+        "saal",
+        "startzeit",
+        "film",
+        "dauer"
+      ]
+    },
+    "VorstellungLöschen": {
+      "type": "object",
+      "properties": {
+        "film": {
+          "type": "string",
+          "example": "Inception"
+        }
+      },
+      "required": [
+        "film"
+      ]
+    }
+  }
+}

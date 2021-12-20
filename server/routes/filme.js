@@ -6,6 +6,13 @@ const movies = express.Router();
 movies
   .route('/filme')
   .get(function (_req, res) {
+    // #swagger.tags = ['Film']
+    // #swagger.description = 'Alle Filme abrufen.'
+
+    /* #swagger.responses[200] = { 
+               schema: { $ref: "#/definitions/Film" }
+        } */
+
     const dbConnect = dbo.getDb();
 
     dbConnect
@@ -20,6 +27,17 @@ movies
       });
   })
   .post(async function (req, res) {
+    // #swagger.tags = ['Film']
+    // #swagger.description = 'Film anlegen.'
+
+    /* #swagger.parameters['newFilm'] = {
+               in: 'body',
+               description: 'Anzulegender Film.',
+               required: true,
+               type: 'object',
+               schema: { $ref: "#/definitions/FilmAnlegen" }
+        } */
+
     const dbConnect = dbo.getDb();
     const newMovieToInsert = { titel: req.body.titel };
 
@@ -57,6 +75,9 @@ movies
   });
 
 movies.route('/filme/:titel').delete((req, res) => {
+  // #swagger.tags = ['Film']
+  // #swagger.description = 'Film löschen.'
+
   const dbConnect = dbo.getDb();
   const movieToDelete = { titel: req.params.titel };
 

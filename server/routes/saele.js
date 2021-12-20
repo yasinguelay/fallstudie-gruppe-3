@@ -3,6 +3,17 @@ const dbo = require('../db/conn');
 const halls = express.Router();
 
 halls.route('/saele').post(function (req, res) {
+  // #swagger.tags = ['Saal']
+  // #swagger.description = 'Saal anlegen.'
+
+  /* #swagger.parameters['newHall'] = {
+               in: 'body',
+               description: 'Anzulegender Saal.',
+               required: true,
+               type: 'object',
+               schema: { $ref: "#/definitions/SaalAnlegen" }
+        } */
+
   const dbConnect = dbo.getDb();
   const newHallToInsert = {
     nummer: req.body.nummer,
@@ -37,6 +48,9 @@ halls.route('/saele').post(function (req, res) {
 });
 
 halls.route('/saele/:nummer').delete((req, res) => {
+  // #swagger.tags = ['Saal']
+  // #swagger.description = 'Saal löschen.'
+
   const dbConnect = dbo.getDb();
   const hallToDelete = { nummer: parseInt(req.params.nummer) };
 

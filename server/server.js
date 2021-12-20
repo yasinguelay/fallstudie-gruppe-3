@@ -5,6 +5,8 @@ const express = require('express');
 const cors = require('cors');
 // get MongoDB driver connection
 const dbo = require('./db/conn');
+const swaggerUi = require('swagger-ui-express');
+const swaggerFile = require('./swagger_output.json');
 
 const PORT = process.env.PORT || 5000;
 const app = express();
@@ -13,6 +15,7 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static('public'));
+app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 app.use(require('./routes/filme'));
 app.use(require('./routes/saele'));
 app.use(require('./routes/vorstellungen'));
