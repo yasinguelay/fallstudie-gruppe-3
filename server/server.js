@@ -19,6 +19,7 @@ app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 app.use(require('./routes/filme'));
 app.use(require('./routes/saele'));
 app.use(require('./routes/vorstellungen'));
+app.use(require('./routes/sitzplaetze'));
 
 // Global error handling
 app.use(function (err, _req, res, _next) {
