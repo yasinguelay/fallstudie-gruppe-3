@@ -4,27 +4,7 @@ const seats = express.Router();
 
 seats
   .route('/sitzplaetze')
-  .get(function (_req, res) {
-    // #swagger.tags = ['Film']
-    // #swagger.description = 'Alle Filme abrufen.'
-
-    /* #swagger.responses[200] = { 
-               schema: { $ref: "#/definitions/Film" }
-        } */
-
-    const dbConnect = dbo.getDb();
-
-    dbConnect
-      .collection('film')
-      .find({})
-      .toArray(function (err, result) {
-        if (err) {
-          res.status(400).send('Fehler beim Abrufen der Filme!');
-        } else {
-          res.json(result);
-        }
-      });
-  })
+  .get(function (_req, _res) {})
   .post(async function (req, res) {
     const dbConnect = dbo.getDb();
 
@@ -58,7 +38,7 @@ seats
         .updateOne(seatToReserve, updateQuery, arrayFilters);
 
       if (result.modifiedCount === 0) {
-        for (let i = 0; i <= index; i++) {
+        for (let i = 0; i < index; i++) {
           const seatToUndo = {
             titel: req.body[i].titel,
           };

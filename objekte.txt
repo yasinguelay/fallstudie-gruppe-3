@@ -1,2 +1,0 @@
-Film: [{"bild": String (url), "titel": String, "dauer": int}, ...]
-Vorstellung: [{"saal": int, "startzeit": String, "sitzplaetze": [{"reihe": String, "nummer": int, "sitzart": String, "reserviert": bool}, ...]}, ...]
