@@ -3,7 +3,7 @@ const dbo = require('../db/conn');
 const seats = express.Router();
 
 seats
-  .route('/sitzplaetze')
+  .route('/sitzplaetze/reservieren')
   .get(function (_req, _res) {})
   .post(async function (req, res) {
     const dbConnect = dbo.getDb();
