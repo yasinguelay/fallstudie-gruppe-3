@@ -8,6 +8,42 @@ seats
   .post(async function (req, res) {
     const dbConnect = dbo.getDb();
 
+    const undoAfterBlockTime = function () {
+      for (const [, seat] of req.body.entries()) {
+        const undoSeatAfterTimeout = {
+          titel: seat.titel,
+        };
+
+        const undoAfterTimeoutQuery = {
+          $set: {
+            'vorstellungen.$[i].sitzplaetze.$[j].reserviert': false,
+          },
+        };
+
+        const undoAfterTimeoutArrayFilters = {
+          arrayFilters: [
+            {
+              'i.saal': seat.saal,
+              'i.startzeit': seat.startzeit,
+            },
+            {
+              'j.reihe': seat.reihe,
+              'j.nummer': seat.nummer,
+              'j.reserviert': true,
+            },
+          ],
+        };
+
+        dbConnect
+          .collection('film')
+          .updateOne(
+            undoSeatAfterTimeout,
+            undoAfterTimeoutQuery,
+            undoAfterTimeoutArrayFilters
+          );
+      }
+    };
+
     for (const [index, seat] of req.body.entries()) {
       const seatToReserve = {
         titel: seat.titel,
@@ -15,7 +51,7 @@ seats
 
       const updateQuery = {
         $set: {
-          'vorstellungen.$[i].sitzplaetze.$[j].reserviert': seat.user_id,
+          'vorstellungen.$[i].sitzplaetze.$[j].reserviert': true,
         },
       };
 
@@ -62,7 +98,7 @@ seats
             ],
           };
 
-          const result = await dbConnect
+          dbConnect
             .collection('film')
             .updateOne(seatToUndo, undoQuery, undoArrayFilters);
 
@@ -75,6 +111,7 @@ seats
     }
 
     res.status(200).send('Glückwunsch');
+    setTimeout(undoAfterBlockTime, 30 * 1000);
   });
 
 module.exports = seats;
