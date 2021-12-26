@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 
 import './App.css';
+
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
@@ -8,6 +9,7 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Slider from 'react-slick';
 
 function App() {
   const [fetchResult, setFetchResult] = useState([]);
@@ -16,10 +18,27 @@ function App() {
   
   const movieDetails = useRef(null);
 
+  const sliderSettings = {
+    slidesToShow: 5,
+    slidesToScroll: 4
+  }
+  
+  
   const handleMovieChosen = (e) => {
     setChosenMovie(e.currentTarget.id);
     setChosenMovieResult(fetchResult.find(m => m.titel === e.currentTarget.id));
   }
+
+  const handleMovieHover = (e) => {
+    e.currentTarget.className = 'App-movie-hover';
+    e.currentTarget.children[1].style = '';
+  }
+  
+  const handleMovieLeave = (e) => {
+    e.currentTarget.className = '';
+    e.currentTarget.children[1].style = 'visibility: hidden;'
+  }
+
   
   useEffect(() => {
     fetch('https://fallstudie-gruppe-3.herokuapp.com/filme')
@@ -64,64 +83,76 @@ function App() {
         </Container>
       </Navbar>
 
-      <Container fluid style={{marginTop: '100px'}}>
-        <Row className="g-4 justify-content-around">
+      <Container style={{marginTop: 100}} className="p-0">
+        <h2 style={{marginLeft: '5rem', marginBottom: '1.5rem'}}>Aktuelles Programm</h2>
+        <Slider {...sliderSettings}>
           {fetchResult.map((movie) => (
-            <Col id={movie.titel} key={movie.titel} style={{flexBasis: '25rem'}} className="flex-grow-0" onClick={handleMovieChosen}>
-              <Card className="container-fluid p-0">
-                <Card.Img variant="top" src={movie.bild} />
-              </Card>
-            </Col>
-          ))}
-        </Row>
+            <div>
+                <div onMouseEnter={handleMovieHover} onMouseLeave={handleMovieLeave} style={{paddingTop: '0.3rem', textAlign: 'center'}}>
+                  <Card id={movie.titel} key={movie.titel} style={{width: '97%', margin: 'auto', color: 'black'}} onClick={handleMovieChosen}>
+                    <Card.Img variant="top" src={movie.bild} />
+                      <Card.Body style={{height: '7rem'}}>
+                        <Card.Title style={{textAlign: 'left'}}>
+                          {movie.titel}
+                        </Card.Title>
+                      </Card.Body>
+                    </Card>
+                    <svg style={{visibility: 'hidden'}} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                      <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+                    </svg>
+                </div>
+            </div>
+            ))}
+        </Slider>
       </Container>
 
       {
         chosenMovie ? (
-          <Container ref={movieDetails}>
-            <Row>
-              <Col>
-                <h2>{chosenMovieResult.titel}</h2>
+          <Container ref={movieDetails} style={{paddingLeft: '10rem', paddingRight: '10rem'}}>
+            <Row style={{marginBottom: '0.5rem'}}>
+              <Col style={{padding: 0}}>
+                <h3>{chosenMovieResult.titel}</h3>
               </Col>
             </Row>
-            <Row>
+            <Row style={{backgroundColor: '#404B62', marginBottom: '0.5rem', paddingTop: '1rem', paddingBottom: '1rem'}}>
               <Col>
                 {`${chosenMovieResult.dauer}min`}
               </Col>
             </Row>
-            <Row>
+            <Row style={{backgroundColor: '#404B62', paddingTop: '2rem', paddingBottom: '1rem', marginBottom: '5rem'}}>
               <Col>
-                <h2>Vorstellungen</h2>
-                {chosenMovieResult.vorstellungen.map(e => (
-                  <Row>
-                    <Col style={{textAlign: 'left'}}>
-                    {new Date(e.startzeit).toLocaleString('de-DE', {weekday: 'short'}).toUpperCase()}
-                    <br />
-                    {new Date(e.startzeit).toLocaleString('de-DE', {day: 'numeric', month:'short'})}
-                    </Col>
-                    <Col style={{textAlign: 'left'}}>
-                      <Button variant="warning">{new Date(e.startzeit).toLocaleTimeString('de-DE', {hour: '2-digit', minute:'2-digit'})}</Button>
-                    </Col>
-                  </Row>
-                ))}
+                <h3 style={{fontWeight: 'bold', marginBottom: '1rem', marginLeft: '1.5rem'}}>Vorstellungen</h3>
+                <Container fluid style={{backgroundColor: '#000B22'}}>
+                  {chosenMovieResult.vorstellungen.map(e => (
+                    <Row style={{paddingTop: '1rem', paddingBottom: '1rem'}} className='align-items-center'>
+                      <Col style={{textAlign: 'left'}}>
+                      {new Date(e.startzeit).toLocaleString('de-DE', {weekday: 'short'}).toUpperCase()}
+                      <br />
+                      {new Date(e.startzeit).toLocaleString('de-DE', {day: 'numeric', month:'short'})}
+                      </Col>
+                      <Col style={{textAlign: 'left'}}>
+                        <Button variant="warning" style={{width: '5rem'}}>{new Date(e.startzeit).toLocaleTimeString('de-DE', {hour: '2-digit', minute:'2-digit'})}</Button>
+                      </Col>
+                    </Row>
+                  ))} 
+                </Container>
               </Col>
-              <Row>
-                <Col>
-                  Beschreibung
-                </Col>
-                <Col>
-                  BeschreibungBlabla
-                </Col>
-              </Row>
+            </Row>
+            <Row>
+              <Col className='fs-5'>
+                Beschreibung
+              </Col>
+              <Col>
+                BeschreibungBlablasdasd asddddddddddddddas saaaaaaaaaaaada ssaaaaaa
+              </Col>
             </Row>
           </Container>
         ) : null
       }
-      
+
 
     </div>
   );
-  // test.toLocaleString('de-DE', {weekday: 'short'}).toUpperCase();
 }
 
 export default App;

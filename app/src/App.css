@@ -1,5 +1,5 @@
 .App {
-  text-align: center;
+  /* text-align: center; */
 }
 
 .App-logo {
@@ -35,4 +35,9 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.App-movie-hover {
+  border-radius: 10px;
+  background-color: #ffc107;
 }
