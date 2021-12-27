@@ -10,6 +10,8 @@ import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Slider from 'react-slick';
+import Tabs from 'react-bootstrap/Tabs'
+import Tab from 'react-bootstrap/Tab'
 
 function App() {
   const [fetchResult, setFetchResult] = useState([]);
@@ -17,9 +19,10 @@ function App() {
   const [chosenMovieElementContainer, setChosenMovieElementContainer] = useState('');
   const [chosenMovieDetails, setChosenMovieDetails] = useState({});
   const [chosenMovieShows, setChosenMovieShows] = useState([]);
+  const [chosenShow, setChosenShow] = useState('');
 
-  
   const movieDetails = useRef(null);
+  const showDetails = useRef(null);
 
   const sliderSettings = {
     slidesToShow: 5,
@@ -52,6 +55,10 @@ function App() {
     }
 
     setChosenMovieShows(showsForEachDay);
+  }
+
+  const handleShowChosen = (e) => {
+    setChosenShow(e.target.value);
   }
 
   const handleMovieHover = (e) => {
@@ -90,6 +97,12 @@ function App() {
       }
     }
   }, [chosenMovie, chosenMovieElementContainer]);
+
+  useEffect(() => {
+    if (chosenShow) {
+      showDetails.current.scrollIntoView();
+    }
+  }, [chosenShow]);
   
   return (
     <div id="home" className="App">
@@ -150,7 +163,7 @@ function App() {
             <iframe width="100%" height="500" src="https://www.youtube.com/embed/JfVOs4VSpmA" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
             </Container>
 
-            <Container style={{paddingLeft: '10rem', paddingRight: '10rem'}}>
+            <Container style={{paddingLeft: '10rem', paddingRight: '10rem', marginBottom: '7rem'}}>
               <Row style={{marginBottom: '0.5rem'}}>
                 <Col style={{padding: 0}}>
                   <h3>{chosenMovie}</h3>
@@ -176,7 +189,7 @@ function App() {
                           <Row className='gx-2 gy-1 justify-content-start'>
                             {chosenMovieShows[i].map(s => (
                               <Col key={s} style={{textAlign: 'left'}} className='flex-grow-0'>
-                                <Button variant="warning" style={{width: '5rem'}}>{new Date(s).toLocaleTimeString('de-DE', {hour: '2-digit', minute:'2-digit'})}</Button>
+                                <Button value={s} variant="warning" style={{width: '5rem'}} onClick={handleShowChosen}>{new Date(s).toLocaleTimeString('de-DE', {hour: '2-digit', minute:'2-digit'})}</Button>
                               </Col>
                             ))}
                           </Row>
@@ -197,6 +210,96 @@ function App() {
             </Container>
           </>
           
+        ) : null
+      }
+
+      {
+        chosenShow ? (
+          <Container ref={showDetails} style={{scrollMarginTop: 59, backgroundColor: '#404B62'}}>
+            <Row className='py-2 fs-5'>
+              <Col>
+                Ihre Film- & Platzwahl
+              </Col>
+            </Row>
+            <Row style={{backgroundColor: '#000B22'}} className='mx-0 pt-1'>
+              <Row className='py-4 mb-4'>
+                <Col>
+                  <span className='fw-bold'>Film: </span>{chosenMovie + ' | '}<span className='fw-bold'>Saal: </span>{chosenMovieDetails.vorstellungen.find(e => e.startzeit === chosenShow).saal + ' | '}<span className='fw-bold'>Datum: </span>{new Date(chosenShow).toLocaleString('de-DE', {weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'})}
+                </Col>
+              </Row>
+              <Row className='mb-4'>
+                <Col>
+                  Bitte wählen Sie Ihre gewünschten Tickets und deren Anzahl aus.
+                  <br />
+                  Platzieren Sie die Tickets daraufhin in dem Saalplan unter der Ticketauswahl.
+                </Col>
+              </Row>
+              <Row className='pe-0'>
+                <Col className='pe-0'>
+                  <Tabs defaultActiveKey="home" id="uncontrolled-tab-example" className="">
+                    <Tab eventKey="home" title="Home" className='p-0'>
+                      <Row className='px-3'>
+                        <Col>
+                          Ticket
+                        </Col>
+                        <Col>
+                          Preis
+                        </Col>
+                        <Col>
+                          Anzahl
+                        </Col>
+                        <Col>
+                          Gesamt
+                        </Col>
+                      </Row>
+                      <hr className='m-2' />
+                      <Row className='px-3'>
+                        <Col>
+                          Erwachsener
+                        </Col>
+                        <Col>
+                          17,90 €
+                        </Col>
+                        <Col>
+                          <Button variant="secondary">-</Button>
+                          <span></span>
+                          <Button variant="secondary">+</Button>
+                        </Col>
+                        <Col>
+                          Gesamt
+                        </Col>
+                      </Row>
+                      <hr className='m-2' />
+                      <Row className='px-3 mb-4'>
+                        <Col>
+                          Kind unter 15 J
+                        </Col>
+                        <Col>
+                          14,90 €
+                        </Col>
+                        <Col>
+                          <Button variant="secondary">-</Button>
+                          <span></span>
+                          <Button variant="secondary">+</Button>
+                        </Col>
+                        <Col>
+                          Gesamt
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col>
+                          <Button variant="secondary">Auswahl aufheben</Button>
+                        </Col>
+                      </Row>
+                    </Tab>
+                    <Tab eventKey="profile" title="Profile">
+                      Test
+                    </Tab>
+                  </Tabs>
+                </Col>
+              </Row>
+            </Row>
+          </Container>
         ) : null
       }
 
