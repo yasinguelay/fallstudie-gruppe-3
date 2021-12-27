@@ -39,5 +39,11 @@
 
 .App-movie-hover {
   border-radius: 10px;
+  background-color: #ffc10796;
+  /* #ffc107 */
+}
+
+.App-movie-hover-acvtive {
+  border-radius: 10px;
   background-color: #ffc107;
 }

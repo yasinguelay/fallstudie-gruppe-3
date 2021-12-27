@@ -14,7 +14,8 @@ import Slider from 'react-slick';
 function App() {
   const [fetchResult, setFetchResult] = useState([]);
   const [chosenMovie, setChosenMovie] = useState('');
-  const [chosenMovieResult, setChosenMovieResult] = useState({});
+  const [chosenMovieDetails, setChosenMovieDetails] = useState({});
+  const [chosenMovieShows, setChosenMovieShows] = useState([]);
   
   const movieDetails = useRef(null);
 
@@ -26,17 +27,40 @@ function App() {
   
   const handleMovieChosen = (e) => {
     setChosenMovie(e.currentTarget.id);
-    setChosenMovieResult(fetchResult.find(m => m.titel === e.currentTarget.id));
+    setChosenMovieDetails(fetchResult.find(m => m.titel === e.currentTarget.id))
+    
+    const allShowsForChosenMovie = fetchResult.find(m => m.titel === e.currentTarget.id).vorstellungen.map(s => s.startzeit).sort();
+
+    const showsForEachDay = [[]];
+
+    for (const show of allShowsForChosenMovie) {
+      for (const day of showsForEachDay) {
+        const indexOfDayArray = showsForEachDay.indexOf(day);
+        
+        if (day.length === 0 || show.substring(0, 10) === day[0].substring(0, 10)) {
+          day.push(show);
+        } else if(indexOfDayArray === showsForEachDay.length - 1) {
+          showsForEachDay.push([show]);
+          break;
+        }
+      }
+    }
+
+    setChosenMovieShows(showsForEachDay);
   }
 
   const handleMovieHover = (e) => {
-    e.currentTarget.className = 'App-movie-hover';
-    e.currentTarget.children[1].style = '';
+    if (e.currentTarget.children[0].id !== chosenMovie) {
+      e.currentTarget.className = 'App-movie-hover';
+      e.currentTarget.children[1].style = '';
+    }
   }
   
   const handleMovieLeave = (e) => {
-    e.currentTarget.className = '';
-    e.currentTarget.children[1].style = 'visibility: hidden;'
+    if (e.currentTarget.children[0].id !== chosenMovie) {
+      e.currentTarget.className = '';
+      e.currentTarget.children[1].style = 'visibility: hidden;'
+    }
   }
 
   
@@ -48,11 +72,19 @@ function App() {
     });
   }, []);
 
-  useEffect(() => {
+ /*  useEffect(() => {
     if (chosenMovie) {
-      movieDetails.current.scrollIntoView(true);
+      movieDetails.current.scrollIntoView();
+      document.getElementById(chosenMovie + ' Container').className = 'App-movie-hover-acvtive';
     }
-  }, [chosenMovie]);
+
+    return () => {
+      if (chosenMovie) {
+        document.getElementById(chosenMovie + ' Container').className = '';
+        document.getElementById(chosenMovie + ' Container').children[1].style = 'visibility: hidden;';
+      }
+    }
+  }, [chosenMovie]); */
   
   return (
     <div id="home" className="App ">
@@ -88,7 +120,7 @@ function App() {
         <Slider {...sliderSettings}>
           {fetchResult.map((movie) => (
             <div>
-                <div onMouseEnter={handleMovieHover} onMouseLeave={handleMovieLeave} style={{paddingTop: '0.3rem', textAlign: 'center'}}>
+                <div id={movie.titel + ' Container'} onMouseEnter={handleMovieHover} onMouseLeave={handleMovieLeave} style={{paddingTop: '0.3rem', textAlign: 'center'}}>
                   <Card id={movie.titel} key={movie.titel} style={{width: '97%', margin: 'auto', color: 'black'}} onClick={handleMovieChosen}>
                     <Card.Img variant="top" src={movie.bild} />
                       <Card.Body style={{height: '7rem'}}>
@@ -108,45 +140,58 @@ function App() {
 
       {
         chosenMovie ? (
-          <Container ref={movieDetails} style={{paddingLeft: '10rem', paddingRight: '10rem'}}>
-            <Row style={{marginBottom: '0.5rem'}}>
-              <Col style={{padding: 0}}>
-                <h3>{chosenMovieResult.titel}</h3>
-              </Col>
-            </Row>
-            <Row style={{backgroundColor: '#404B62', marginBottom: '0.5rem', paddingTop: '1rem', paddingBottom: '1rem'}}>
-              <Col>
-                {`${chosenMovieResult.dauer}min`}
-              </Col>
-            </Row>
-            <Row style={{backgroundColor: '#404B62', paddingTop: '2rem', paddingBottom: '1rem', marginBottom: '5rem'}}>
-              <Col>
-                <h3 style={{fontWeight: 'bold', marginBottom: '1rem', marginLeft: '1.5rem'}}>Vorstellungen</h3>
-                <Container fluid style={{backgroundColor: '#000B22'}}>
-                  {chosenMovieResult.vorstellungen.map(e => (
-                    <Row style={{paddingTop: '1rem', paddingBottom: '1rem'}} className='align-items-center'>
-                      <Col style={{textAlign: 'left'}}>
-                      {new Date(e.startzeit).toLocaleString('de-DE', {weekday: 'short'}).toUpperCase()}
-                      <br />
-                      {new Date(e.startzeit).toLocaleString('de-DE', {day: 'numeric', month:'short'})}
-                      </Col>
-                      <Col style={{textAlign: 'left'}}>
-                        <Button variant="warning" style={{width: '5rem'}}>{new Date(e.startzeit).toLocaleTimeString('de-DE', {hour: '2-digit', minute:'2-digit'})}</Button>
-                      </Col>
-                    </Row>
-                  ))} 
-                </Container>
-              </Col>
-            </Row>
-            <Row>
-              <Col className='fs-5'>
-                Beschreibung
-              </Col>
-              <Col>
-                BeschreibungBlablasdasd asddddddddddddddas saaaaaaaaaaaada ssaaaaaa
-              </Col>
-            </Row>
-          </Container>
+          <>
+            <Container ref={movieDetails} style={{marginBottom: '5rem', scrollMarginTop: 59}}>
+            <iframe width="100%" height="500" src="https://www.youtube.com/embed/JfVOs4VSpmA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </Container>
+
+            <Container style={{paddingLeft: '10rem', paddingRight: '10rem'}}>
+              <Row style={{marginBottom: '0.5rem'}}>
+                <Col style={{padding: 0}}>
+                  <h3>{chosenMovie}</h3>
+                </Col>
+              </Row>
+              <Row style={{backgroundColor: '#404B62', marginBottom: '0.5rem', paddingTop: '1rem', paddingBottom: '1rem'}}>
+                <Col>
+                  {`${chosenMovieDetails.dauer}min`}
+                </Col>
+              </Row>
+              <Row style={{backgroundColor: '#404B62', paddingTop: '2rem', paddingBottom: '1rem', marginBottom: '5rem'}}>
+                <Col>
+                  <h3 style={{fontWeight: 'bold', marginBottom: '1rem', marginLeft: '1.5rem'}}>Vorstellungen</h3>
+                  <Container fluid style={{backgroundColor: '#000B22'}}>
+                    {chosenMovieShows.map((e, i) => (
+                      <Row style={{paddingTop: '1rem', paddingBottom: '1rem'}} className='align-items-center'>
+                        <Col xs={3} style={{textAlign: 'left'}}>
+                        {new Date(e[0]).toLocaleString('de-DE', {weekday: 'short'}).toUpperCase()}
+                        <br />
+                        {new Date(e[0]).toLocaleString('de-DE', {day: 'numeric', month:'short'})}
+                        </Col>
+                        <Col>
+                          <Row className='gx-2 gy-1 justify-content-start'>
+                            {chosenMovieShows[i].map(s => (
+                              <Col style={{textAlign: 'left'}} className='flex-grow-0'>
+                                <Button variant="warning" style={{width: '5rem'}}>{new Date(s).toLocaleTimeString('de-DE', {hour: '2-digit', minute:'2-digit'})}</Button>
+                              </Col>
+                            ))}
+                          </Row>
+                        </Col>
+                      </Row>
+                    ))} 
+                  </Container>
+                </Col>
+              </Row>
+              <Row>
+                <Col xs={3} className='fs-5'>
+                  Beschreibung
+                </Col>
+                <Col>
+                  {chosenMovieDetails.beschreibung}
+                </Col>
+              </Row>
+            </Container>
+          </>
+          
         ) : null
       }
 
