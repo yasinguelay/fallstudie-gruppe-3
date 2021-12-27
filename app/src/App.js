@@ -14,8 +14,10 @@ import Slider from 'react-slick';
 function App() {
   const [fetchResult, setFetchResult] = useState([]);
   const [chosenMovie, setChosenMovie] = useState('');
+  const [chosenMovieElementContainer, setChosenMovieElementContainer] = useState('');
   const [chosenMovieDetails, setChosenMovieDetails] = useState({});
   const [chosenMovieShows, setChosenMovieShows] = useState([]);
+
   
   const movieDetails = useRef(null);
 
@@ -27,6 +29,9 @@ function App() {
   
   const handleMovieChosen = (e) => {
     setChosenMovie(e.currentTarget.id);
+
+    setChosenMovieElementContainer(e.currentTarget.parentElement);
+
     setChosenMovieDetails(fetchResult.find(m => m.titel === e.currentTarget.id))
     
     const allShowsForChosenMovie = fetchResult.find(m => m.titel === e.currentTarget.id).vorstellungen.map(s => s.startzeit).sort();
@@ -72,22 +77,22 @@ function App() {
     });
   }, []);
 
- /*  useEffect(() => {
+  useEffect(() => {
     if (chosenMovie) {
+      chosenMovieElementContainer.className = 'App-movie-hover-active';
       movieDetails.current.scrollIntoView();
-      document.getElementById(chosenMovie + ' Container').className = 'App-movie-hover-acvtive';
     }
 
     return () => {
       if (chosenMovie) {
-        document.getElementById(chosenMovie + ' Container').className = '';
-        document.getElementById(chosenMovie + ' Container').children[1].style = 'visibility: hidden;';
+        chosenMovieElementContainer.className = '';
+        chosenMovieElementContainer.children[1].style = 'visibility: hidden;';
       }
     }
-  }, [chosenMovie]); */
+  }, [chosenMovie, chosenMovieElementContainer]);
   
   return (
-    <div id="home" className="App ">
+    <div id="home" className="App">
       
       <Navbar bg="dark" expand="lg" variant="dark" fixed="top">
         <Container fluid className="mx-2">
@@ -108,8 +113,8 @@ function App() {
           </Navbar.Brand>
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav style={{ flexBasis: 0 }} className="me-auto flex-grow-1 justify-content-center">
-              <Nav.Link href="#home">Home</Nav.Link>
-              <Nav.Link href="#link">Link</Nav.Link>
+              <Nav.Link href="#home">Programm</Nav.Link>
+              <Nav.Link href="#link">Admin</Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Container>
@@ -119,7 +124,7 @@ function App() {
         <h2 style={{marginLeft: '5rem', marginBottom: '1.5rem'}}>Aktuelles Programm</h2>
         <Slider {...sliderSettings}>
           {fetchResult.map((movie) => (
-            <div>
+            <div key={movie.titel}>
                 <div id={movie.titel + ' Container'} onMouseEnter={handleMovieHover} onMouseLeave={handleMovieLeave} style={{paddingTop: '0.3rem', textAlign: 'center'}}>
                   <Card id={movie.titel} key={movie.titel} style={{width: '97%', margin: 'auto', color: 'black'}} onClick={handleMovieChosen}>
                     <Card.Img variant="top" src={movie.bild} />
@@ -142,7 +147,7 @@ function App() {
         chosenMovie ? (
           <>
             <Container ref={movieDetails} style={{marginBottom: '5rem', scrollMarginTop: 59}}>
-            <iframe width="100%" height="500" src="https://www.youtube.com/embed/JfVOs4VSpmA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <iframe width="100%" height="500" src="https://www.youtube.com/embed/JfVOs4VSpmA" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
             </Container>
 
             <Container style={{paddingLeft: '10rem', paddingRight: '10rem'}}>
@@ -161,7 +166,7 @@ function App() {
                   <h3 style={{fontWeight: 'bold', marginBottom: '1rem', marginLeft: '1.5rem'}}>Vorstellungen</h3>
                   <Container fluid style={{backgroundColor: '#000B22'}}>
                     {chosenMovieShows.map((e, i) => (
-                      <Row style={{paddingTop: '1rem', paddingBottom: '1rem'}} className='align-items-center'>
+                      <Row key={e[0]} style={{paddingTop: '1rem', paddingBottom: '1rem'}} className='align-items-center'>
                         <Col xs={3} style={{textAlign: 'left'}}>
                         {new Date(e[0]).toLocaleString('de-DE', {weekday: 'short'}).toUpperCase()}
                         <br />
@@ -170,7 +175,7 @@ function App() {
                         <Col>
                           <Row className='gx-2 gy-1 justify-content-start'>
                             {chosenMovieShows[i].map(s => (
-                              <Col style={{textAlign: 'left'}} className='flex-grow-0'>
+                              <Col key={s} style={{textAlign: 'left'}} className='flex-grow-0'>
                                 <Button variant="warning" style={{width: '5rem'}}>{new Date(s).toLocaleTimeString('de-DE', {hour: '2-digit', minute:'2-digit'})}</Button>
                               </Col>
                             ))}
