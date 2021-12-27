@@ -236,59 +236,59 @@ function App() {
               </Row>
               <Row className='pe-0'>
                 <Col className='pe-0'>
-                  <Tabs defaultActiveKey="home" id="uncontrolled-tab-example" className="">
-                    <Tab eventKey="home" title="Home" className='p-0'>
+                  <Tabs defaultActiveKey="PK1" id="uncontrolled-tab-example">
+                    <Tab eventKey="PK1" title="PK1" className='p-0'>
                       <Row className='px-3'>
-                        <Col>
+                        <Col className='fw-bold'>
                           Ticket
                         </Col>
-                        <Col>
+                        <Col className='fw-bold'>
                           Preis
                         </Col>
-                        <Col>
+                        <Col className='fw-bold text-center'>
                           Anzahl
                         </Col>
-                        <Col>
+                        <Col className='fw-bold text-end'>
                           Gesamt
                         </Col>
                       </Row>
                       <hr className='m-2' />
-                      <Row className='px-3'>
+                      <Row className='px-3 align-items-center'>
                         <Col>
                           Erwachsener
                         </Col>
                         <Col>
                           17,90 €
                         </Col>
-                        <Col>
+                        <Col className='text-center'>
                           <Button variant="secondary">-</Button>
                           <span></span>
                           <Button variant="secondary">+</Button>
                         </Col>
-                        <Col>
+                        <Col className='text-end'>
                           Gesamt
                         </Col>
                       </Row>
                       <hr className='m-2' />
-                      <Row className='px-3 mb-4'>
+                      <Row className='px-3 mb-4 align-items-center'>
                         <Col>
                           Kind unter 15 J
                         </Col>
                         <Col>
                           14,90 €
                         </Col>
-                        <Col>
+                        <Col className='text-center'>
                           <Button variant="secondary">-</Button>
                           <span></span>
                           <Button variant="secondary">+</Button>
                         </Col>
-                        <Col>
+                        <Col className='text-end'>
                           Gesamt
                         </Col>
                       </Row>
-                      <Row>
-                        <Col>
-                          <Button variant="secondary">Auswahl aufheben</Button>
+                      <Row className='px-3'>
+                        <Col className='text-end'>
+                          <Button style={{backgroundColor: '#C63E38', borderColor: '#C63E38'}} >Auswahl aufheben</Button>
                         </Col>
                       </Row>
                     </Tab>
