@@ -20,6 +20,7 @@ function App() {
   const [chosenMovieDetails, setChosenMovieDetails] = useState({});
   const [chosenMovieShows, setChosenMovieShows] = useState([]);
   const [chosenShow, setChosenShow] = useState('');
+  const [chosenShowSeats, setChosenShowSeats] = useState([]);
 
   const movieDetails = useRef(null);
   const showDetails = useRef(null);
@@ -101,8 +102,25 @@ function App() {
   useEffect(() => {
     if (chosenShow) {
       showDetails.current.scrollIntoView();
+
+      const seatsForChosenShow = [[]];
+
+      for (const seat of chosenMovieDetails.vorstellungen.find(e => e.startzeit === chosenShow).sitzplaetze) {
+        for (const row of seatsForChosenShow) {
+          const indexOfDayArray = seatsForChosenShow.indexOf(row);
+          
+          if (row.length === 0 || seat.reihe === row[0].reihe) {
+            row.push(seat);
+          } else if (indexOfDayArray === seatsForChosenShow.length - 1) {
+            seatsForChosenShow.push([seat]);
+            break;
+          }
+        }
+      }
+
+      setChosenShowSeats(seatsForChosenShow);
     }
-  }, [chosenShow]);
+  }, [chosenShow, chosenMovieDetails]);
   
   return (
     <div id="home" className="App">
@@ -234,7 +252,7 @@ function App() {
                   Platzieren Sie die Tickets daraufhin in dem Saalplan unter der Ticketauswahl.
                 </Col>
               </Row>
-              <Row className='pe-0'>
+              <Row className='pe-0 mb-5'>
                 <Col className='pe-0'>
                   <Tabs defaultActiveKey="PK1" id="uncontrolled-tab-example">
                     <Tab eventKey="PK1" title="PK1" className='p-0'>
@@ -297,6 +315,35 @@ function App() {
                     </Tab>
                   </Tabs>
                 </Col>
+              </Row>
+              <Row className='justify-content-center pe-0' style={{position: 'relative'}}>
+                <Row className='pe-0'>
+                  <Col style={{borderBottom: '2rem solid #555', borderLeft: '2rem solid transparent', borderRight: '2rem solid transparent'}}>
+                  </Col>
+                </Row>
+                <Row style={{position: 'absolute', height: '2rem'}} className='pe-0 align-items-center'>
+                  <Col style={{textAlign: 'center'}}>
+                    Leinwand
+                  </Col>
+                </Row>
+                <Row className='pe-0'>
+                  {
+                    chosenShowSeats.map(e => (
+                      <Row className='pe-0'>
+                        {
+                          e.map(s => (
+                            <Col>
+                              s.reihe
+                            </Col>
+                          ))
+                        }
+                        <Col className='flex-grow-0 pe-0'>
+                          {e[0].reihe}
+                        </Col>
+                      </Row>
+                    ))
+                  }
+                </Row>
               </Row>
             </Row>
           </Container>
