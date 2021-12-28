@@ -1,6 +1,0 @@
-function SingleMovieDetailed(props) {
-
-    return (
-
-    );
-}

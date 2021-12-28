@@ -2,16 +2,18 @@ import { useState, useEffect, useRef } from 'react';
 
 import './App.css';
 
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
+import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import Card from 'react-bootstrap/Card';
-import Button from 'react-bootstrap/Button';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Popover from 'react-bootstrap/Popover';
 import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import Slider from 'react-slick';
-import Tabs from 'react-bootstrap/Tabs'
-import Tab from 'react-bootstrap/Tab'
+import Tab from 'react-bootstrap/Tab';
+import Tabs from 'react-bootstrap/Tabs';
 
 function App() {
   const [fetchResult, setFetchResult] = useState([]);
@@ -20,7 +22,10 @@ function App() {
   const [chosenMovieDetails, setChosenMovieDetails] = useState({});
   const [chosenMovieShows, setChosenMovieShows] = useState([]);
   const [chosenShow, setChosenShow] = useState('');
+  const [chosenHall, setChosenHall] = useState(-1);
   const [chosenShowSeats, setChosenShowSeats] = useState([]);
+  const [pk1Selected, setPk1Selected] = useState(true);
+  const [chosenSeatsToBook, setChosenSeatsToBook] = useState([]);
 
   const movieDetails = useRef(null);
   const showDetails = useRef(null);
@@ -76,6 +81,35 @@ function App() {
     }
   }
 
+  const handlePkChosen = (k) => {
+    if (k === 'PK2') {
+      setPk1Selected(false);
+    } else {
+      setPk1Selected(true);
+    }
+  }
+
+  const handleSeatChosen = (e) => {
+    if(e.currentTarget.getAttribute('fill') === '#FFCA2D') {
+      e.currentTarget.setAttribute('fill', 'currentColor');
+      e.currentTarget.innerHTML = '<path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2z"/>';
+
+      const seatToDelete = {titel: chosenMovie, saal: chosenHall, startzeit: chosenShow, reihe: e.currentTarget.id[0], nummer: parseInt(e.currentTarget.id[1])};
+      
+      const removedSeatArray = chosenSeatsToBook.filter((e) => JSON.stringify(e) !== JSON.stringify(seatToDelete))
+
+      setChosenSeatsToBook(removedSeatArray);
+
+    } else {
+      e.currentTarget.setAttribute('fill', '#FFCA2D');
+      e.currentTarget.innerHTML = '<path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/><path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1v-1c0-1-1-4-6-4s-6 3-6 4v1a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12z"/>'
+
+      const seatToAppend = {titel: chosenMovie, saal: chosenHall, startzeit: chosenShow, reihe: e.currentTarget.id[0], nummer: parseInt(e.currentTarget.id[1])};
+      
+      setChosenSeatsToBook([...chosenSeatsToBook, seatToAppend]);
+    }
+  }
+
   
   useEffect(() => {
     fetch('https://fallstudie-gruppe-3.herokuapp.com/filme')
@@ -119,6 +153,7 @@ function App() {
       }
 
       setChosenShowSeats(seatsForChosenShow);
+      setChosenHall(chosenMovieDetails.vorstellungen.find(e => e.startzeit === chosenShow).saal);
     }
   }, [chosenShow, chosenMovieDetails]);
   
@@ -254,7 +289,7 @@ function App() {
               </Row>
               <Row className='pe-0 mb-5'>
                 <Col className='pe-0'>
-                  <Tabs defaultActiveKey="PK1" id="uncontrolled-tab-example">
+                  <Tabs defaultActiveKey="PK1" id="uncontrolled-tab-example" onSelect={handlePkChosen}>
                     <Tab eventKey="PK1" title="PK1" className='p-0'>
                       <Row className='px-3'>
                         <Col className='fw-bold'>
@@ -310,14 +345,14 @@ function App() {
                         </Col>
                       </Row>
                     </Tab>
-                    <Tab eventKey="profile" title="Profile">
+                    <Tab eventKey="PK2" title="PK2">
                       Test
                     </Tab>
                   </Tabs>
                 </Col>
               </Row>
               <Row className='justify-content-center pe-0' style={{position: 'relative'}}>
-                <Row className='pe-0'>
+                <Row className='pe-0 mb-5'>
                   <Col style={{borderBottom: '2rem solid #555', borderLeft: '2rem solid transparent', borderRight: '2rem solid transparent'}}>
                   </Col>
                 </Row>
@@ -329,14 +364,47 @@ function App() {
                 <Row className='pe-0'>
                   {
                     chosenShowSeats.map(e => (
-                      <Row className='pe-0'>
-                        {
-                          e.map(s => (
-                            <Col>
-                              s.reihe
-                            </Col>
-                          ))
-                        }
+                      <Row key={`row-${e[0].reihe}`} className='pe-0 ms-0 mb-2 align-items-center'>
+                        <Row style={{flexBasis: '90%', flexGrow: 1}} className='justify-content-center'>
+                          {
+                            e.map(s => (
+                              <Col key={`seat-${s.reihe}-${s.nummer}`} className='mx-1 p-0' style={pk1Selected && s.reihe <= 'G' && !s.reserviert? {color: '#9D082B'} : {}}>
+                                {s.reserviert ? (
+                                  <OverlayTrigger placement="top" overlay=
+                                    {
+                                      <Popover id={`popover-positioned-top`}>
+                                        <Popover.Header as="h3" style={{color: 'black'}}>Sitz nicht verfügbar</Popover.Header>
+                                        <Popover.Body>
+                                          Dieser Sitz steht leider nicht zur Verfügung.
+                                        </Popover.Body>
+                                      </Popover>
+                                    }>
+                                    <svg id={`${s.reihe}${s.nummer}`} xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-person-square" viewBox="0 0 16 16">
+                                      <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                                      <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1v-1c0-1-1-4-6-4s-6 3-6 4v1a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12z"/>
+                                    </svg>
+                                   </OverlayTrigger>
+                                  ) : (
+                                    <OverlayTrigger placement="top" overlay=
+                                    {
+                                      <Popover id={`popover-positioned-top`}>
+                                        <Popover.Header as="h3" style={{color: 'black'}}>{s.reihe <= 'G' ? 'PK1' : 'PK2'}</Popover.Header>
+                                        <Popover.Body>
+                                          {`Reihe: ${s.reihe}`}
+                                          <br />
+                                          {`Sitz: ${s.nummer}`}
+                                        </Popover.Body>
+                                      </Popover>
+                                    }>
+                                    <svg id={`${s.reihe}${s.nummer}`} onClick={handleSeatChosen} xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-square-fill" viewBox="0 0 16 16">
+                                      <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2z"/>
+                                    </svg>
+                                 </OverlayTrigger>
+                                )}
+                              </Col>
+                            ))
+                          }
+                        </Row>
                         <Col className='flex-grow-0 pe-0'>
                           {e[0].reihe}
                         </Col>
