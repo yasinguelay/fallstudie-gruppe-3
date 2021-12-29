@@ -124,7 +124,7 @@ function App() {
       e.currentTarget.setAttribute('fill', '#FFCA2D');
       e.currentTarget.innerHTML = '<path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/><path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1v-1c0-1-1-4-6-4s-6 3-6 4v1a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12z"/>'
 
-      const seatToAppend = {titel: chosenMovie, saal: chosenHall, startzeit: chosenShow, reihe: e.currentTarget.id[0], nummer: parseInt(e.currentTarget.id[1])};
+      const seatToAppend = {titel: chosenMovie, saal: chosenHall, startzeit: chosenShow, reihe: e.currentTarget.id[0], nummer: parseInt(e.currentTarget.id.slice(1))};
       
       setChosenSeatsToBook([...chosenSeatsToBook, seatToAppend]);
       setPk1SelectableSeats(pk1SelectableSeats - 1);
@@ -132,7 +132,7 @@ function App() {
       e.currentTarget.setAttribute('fill', '#FFCA2D');
       e.currentTarget.innerHTML = '<path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/><path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1v-1c0-1-1-4-6-4s-6 3-6 4v1a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12z"/>'
 
-      const seatToAppend = {titel: chosenMovie, saal: chosenHall, startzeit: chosenShow, reihe: e.currentTarget.id[0], nummer: parseInt(e.currentTarget.id[1])};
+      const seatToAppend = {titel: chosenMovie, saal: chosenHall, startzeit: chosenShow, reihe: e.currentTarget.id[0], nummer: parseInt(e.currentTarget.id.slice(1))};
       
       setChosenSeatsToBook([...chosenSeatsToBook, seatToAppend]);
       setPk2SelectableSeats(pk2SelectableSeats - 1);
@@ -203,20 +203,35 @@ function App() {
     }
   };
   
-  const handleDeleteWholeSelection = (e) => {
+  const handleDeleteSelectionPk1 = (e) => {
     setPk1FreeSeatsTotal(pk1FreeSeatsTotal + pk1AdultAmount + pk1ChildAmount);
-    setPk2FreeSeatsTotal(pk2FreeSeatsTotal + pk2AdultAmount + pk2ChildAmount);
     setPk1SelectableSeats(0);
-    setPk2SelectableSeats(0);
     setPk1AdultAmount(0);
     setPk1ChildAmount(0);
-    setPk2AdultAmount(0);
-    setPk2ChildAmount(0);
-    setChosenSeatsToBook([]);
+    setChosenSeatsToBook(chosenSeatsToBook.filter(e => e.reihe > 'G'));
 
     for (const row of chosenShowSeats) {
       for (const seat of row) {
-        if (!seat.reserviert) {
+        if (!seat.reserviert && seat.reihe <= 'G') {
+          const seatElement = document.getElementById(seat.reihe + seat.nummer);
+          
+          seatElement.setAttribute('fill', 'currentColor');
+          seatElement.innerHTML = '<path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2z"/>';
+        }
+      }
+    }
+  };
+  
+  const handleDeleteSelectionPk2 = (e) => {
+    setPk2FreeSeatsTotal(pk2FreeSeatsTotal + pk2AdultAmount + pk2ChildAmount);
+    setPk2SelectableSeats(0);
+    setPk2AdultAmount(0);
+    setPk2ChildAmount(0);
+    setChosenSeatsToBook(chosenSeatsToBook.filter(e => e.reihe <= 'G'));
+
+    for (const row of chosenShowSeats) {
+      for (const seat of row) {
+        if (!seat.reserviert && seat.reihe > 'G') {
           const seatElement = document.getElementById(seat.reihe + seat.nummer);
           
           seatElement.setAttribute('fill', 'currentColor');
@@ -298,8 +313,12 @@ function App() {
       setPk2AdultAmount(0);
       setPk2ChildAmount(0);
       setChosenSeatsToBook([]);
+
+      console.log('hooking');
       
-      return () => {
+     /*  return () => {
+        console.log('hooking internal')
+        
         for (const seat of chosenMovieDetails.vorstellungen.find(e => e.startzeit === chosenShow).sitzplaetze) {
           
           if (!seat.reserviert) {
@@ -309,9 +328,11 @@ function App() {
             seatElement.innerHTML = '<path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2z"/>';
           }
         }
-      } 
+      }  */
     }
   }, [chosenShow, chosenMovieDetails]);
+
+  console.log('rendering');
   
   return (
     <div id="home" className="App">
@@ -438,9 +459,11 @@ function App() {
               </Row>
               <Row className='mb-4'>
                 <Col>
-                  Bitte wählen Sie Ihre gewünschten Tickets und deren Anzahl aus.
+                  {pk1AdultAmount || pk1ChildAmount || pk2AdultAmount || pk2ChildAmount ? `${(pk1AdultAmount + pk1ChildAmount + pk2AdultAmount + pk2ChildAmount) - (pk1SelectableSeats + pk2SelectableSeats)} von ${pk1AdultAmount + pk1ChildAmount + pk2AdultAmount + pk2ChildAmount} Tickets platziert.` : 
+                  <>Bitte wählen Sie Ihre gewünschten Tickets und deren Anzahl aus.
                   <br />
                   Platzieren Sie die Tickets daraufhin in dem Saalplan unter der Ticketauswahl.
+                  </>}
                 </Col>
               </Row>
               <Row className='pe-0 mb-5'>
@@ -529,7 +552,7 @@ function App() {
                       </Row>
                       <Row className='px-3'>
                         <Col className='text-end'>
-                          <Button onClick={handleDeleteWholeSelection} variant='danger' >Gesamte Auswahl aufheben</Button>
+                          <Button onClick={handleDeleteSelectionPk1} variant='danger' > Auswahl aufheben</Button>
                         </Col>
                       </Row>
                     </Tab>
@@ -616,7 +639,7 @@ function App() {
                       </Row>
                       <Row className='px-3'>
                         <Col className='text-end'>
-                          <Button variant='danger' >Auswahl aufheben</Button>
+                          <Button onClick={handleDeleteSelectionPk2} variant='danger' >Auswahl aufheben</Button>
                         </Col>
                       </Row>
                     </Tab>
@@ -640,7 +663,7 @@ function App() {
                         <Row style={{flexBasis: '90%', flexGrow: 1}} className='justify-content-center'>
                           {
                             e.map(s => (
-                              <Col key={`seat-${s.reihe}-${s.nummer}`} className='mx-1 p-0' style={pk1Selected && s.reihe <= 'G' && !s.reserviert? {color: '#DC3646'} : {}}>
+                              <Col key={`seat-${s.reihe}-${s.nummer}`} className='mx-1 p-0' style={(pk1Selected && s.reihe <= 'G' && !s.reserviert) || (!pk1Selected && s.reihe > 'G' && !s.reserviert) ? {color: '#DC3646'} : {}}>
                                 {s.reserviert ? (
                                   <OverlayTrigger placement="top" overlay=
                                     {
