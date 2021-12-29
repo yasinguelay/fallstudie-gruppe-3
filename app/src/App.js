@@ -29,6 +29,8 @@ function App() {
   
   const [pk1FreeSeatsTotal, setPk1FreeSeatsTotal] = useState(0);
   const [pk2FreeSeatsTotal, setPk2FreeSeatsTotal] = useState(0);
+  const [pk1SelectableSeats, setPk1SelectableSeats] = useState(0);
+  const [pk2SelectableSeats, setPk2SelectableSeats] = useState(0);
   const [pk1AdultAmount, setPk1AdultAmount] = useState(0);
   const [pk1ChildAmount, setPk1ChildAmount] = useState(0);
   const [pk2AdultAmount, setPk2AdultAmount] = useState(0);
@@ -45,7 +47,7 @@ function App() {
   const sliderSettings = {
     slidesToShow: 5,
     slidesToScroll: 4
-  }
+  };
   
   
   const handleMovieChosen = (e) => {
@@ -73,25 +75,25 @@ function App() {
     }
 
     setChosenMovieShows(showsForEachDay);
-  }
+  };
 
   const handleShowChosen = (e) => {
     setChosenShow(e.target.value);
-  }
+  };
 
   const handleMovieHover = (e) => {
     if (e.currentTarget.children[0].id !== chosenMovie) {
       e.currentTarget.className = 'App-movie-hover';
       e.currentTarget.children[1].style = '';
     }
-  }
+  };
   
   const handleMovieLeave = (e) => {
     if (e.currentTarget.children[0].id !== chosenMovie) {
       e.currentTarget.className = '';
       e.currentTarget.children[1].style = 'visibility: hidden;'
     }
-  }
+  };
 
   const handlePkChosen = (k) => {
     if (k === 'PK2') {
@@ -99,7 +101,7 @@ function App() {
     } else {
       setPk1Selected(true);
     }
-  }
+  };
 
   const handleSeatChosen = (e) => {
     if(e.currentTarget.getAttribute('fill') === '#FFCA2D') {
@@ -112,72 +114,117 @@ function App() {
 
       setChosenSeatsToBook(removedSeatArray);
 
-    } else {
+      if (e.currentTarget.id[0] <= 'G') {
+        setPk1SelectableSeats(pk1SelectableSeats + 1);
+      } else {
+        setPk2SelectableSeats(pk2SelectableSeats + 1);
+      }
+
+    } else if (e.currentTarget.id[0] <= 'G' && pk1SelectableSeats > 0) {
       e.currentTarget.setAttribute('fill', '#FFCA2D');
       e.currentTarget.innerHTML = '<path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/><path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1v-1c0-1-1-4-6-4s-6 3-6 4v1a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12z"/>'
 
       const seatToAppend = {titel: chosenMovie, saal: chosenHall, startzeit: chosenShow, reihe: e.currentTarget.id[0], nummer: parseInt(e.currentTarget.id[1])};
       
       setChosenSeatsToBook([...chosenSeatsToBook, seatToAppend]);
+      setPk1SelectableSeats(pk1SelectableSeats - 1);
+    } else if (e.currentTarget.id[0] > 'G' && pk2SelectableSeats > 0) {
+      e.currentTarget.setAttribute('fill', '#FFCA2D');
+      e.currentTarget.innerHTML = '<path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/><path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1v-1c0-1-1-4-6-4s-6 3-6 4v1a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12z"/>'
+
+      const seatToAppend = {titel: chosenMovie, saal: chosenHall, startzeit: chosenShow, reihe: e.currentTarget.id[0], nummer: parseInt(e.currentTarget.id[1])};
+      
+      setChosenSeatsToBook([...chosenSeatsToBook, seatToAppend]);
+      setPk2SelectableSeats(pk2SelectableSeats - 1);
     }
-  }
+  };
 
   const handlePk1AdultAdded = (e) => {
     if (pk1AdultAmount < 9 && pk1FreeSeatsTotal > 0) {
       setPk1AdultAmount(pk1AdultAmount + 1);
       setPk1FreeSeatsTotal(pk1FreeSeatsTotal - 1);
+      setPk1SelectableSeats(pk1SelectableSeats + 1);
     }
-  }
+  };
 
   const handlePk1AdultRemoved = (e) => {
-    if (pk1AdultAmount > 0) {
+    if (pk1AdultAmount > 0 && pk1SelectableSeats > 0) {
       setPk1AdultAmount(pk1AdultAmount - 1);
       setPk1FreeSeatsTotal(pk1FreeSeatsTotal + 1);
+      setPk1SelectableSeats(pk1SelectableSeats - 1);
     }
-  }
+  };
 
   const handlePk1ChildAdded = (e) => {
     if (pk1ChildAmount < 9 && pk1FreeSeatsTotal > 0) {
       setPk1ChildAmount(pk1ChildAmount + 1);
       setPk1FreeSeatsTotal(pk1FreeSeatsTotal - 1);
+      setPk1SelectableSeats(pk1SelectableSeats + 1);
     }
-  }
+  };
   
   const handlePk1ChildRemoved = (e) => {
-    if (pk1ChildAmount > 0) {
+    if (pk1ChildAmount > 0 && pk1SelectableSeats > 0) {
       setPk1ChildAmount(pk1ChildAmount - 1);
       setPk1FreeSeatsTotal(pk1FreeSeatsTotal + 1);
+      setPk1SelectableSeats(pk1SelectableSeats - 1);
     }
-  }
+  };
 
   const handlePk2AdultAdded = (e) => {
     if (pk2AdultAmount < 9 && pk2FreeSeatsTotal > 0) {
       setPk2AdultAmount(pk2AdultAmount + 1);
       setPk2FreeSeatsTotal(pk2FreeSeatsTotal - 1);
+      setPk2SelectableSeats(pk2SelectableSeats + 1);
     }
-  }
+  };
 
   const handlePk2AdultRemoved = (e) => {
-    if (pk2AdultAmount > 0) {
+    if (pk2AdultAmount > 0 && pk2SelectableSeats > 0) {
       setPk2AdultAmount(pk2AdultAmount - 1);
       setPk2FreeSeatsTotal(pk2FreeSeatsTotal + 1);
+      setPk2SelectableSeats(pk2SelectableSeats - 1);
     }
-  }
+  };
 
   const handlePk2ChildAdded = (e) => {
     if (pk2ChildAmount < 9 && pk2FreeSeatsTotal > 0) {
       setPk2ChildAmount(pk2ChildAmount + 1);
       setPk2FreeSeatsTotal(pk2FreeSeatsTotal - 1);
+      setPk2SelectableSeats(pk2SelectableSeats + 1);
     }
-  }
+  };
   
   const handlePk2ChildRemoved = (e) => {
-    if (pk2ChildAmount > 0) {
+    if (pk2ChildAmount > 0 && pk2SelectableSeats > 0) {
       setPk2ChildAmount(pk2ChildAmount - 1);
       setPk2FreeSeatsTotal(pk2FreeSeatsTotal + 1);
+      setPk2SelectableSeats(pk2SelectableSeats - 1);
     }
-  }
+  };
   
+  const handleDeleteWholeSelection = (e) => {
+    setPk1FreeSeatsTotal(pk1FreeSeatsTotal + pk1AdultAmount + pk1ChildAmount);
+    setPk2FreeSeatsTotal(pk2FreeSeatsTotal + pk2AdultAmount + pk2ChildAmount);
+    setPk1SelectableSeats(0);
+    setPk2SelectableSeats(0);
+    setPk1AdultAmount(0);
+    setPk1ChildAmount(0);
+    setPk2AdultAmount(0);
+    setPk2ChildAmount(0);
+    setChosenSeatsToBook([]);
+
+    for (const row of chosenShowSeats) {
+      for (const seat of row) {
+        if (!seat.reserviert) {
+          const seatElement = document.getElementById(seat.reihe + seat.nummer);
+          
+          seatElement.setAttribute('fill', 'currentColor');
+          seatElement.innerHTML = '<path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2z"/>';
+        }
+      }
+    }
+  };
 
   useEffect(() => {
     fetch('https://fallstudie-gruppe-3.herokuapp.com/filme')
@@ -188,6 +235,18 @@ function App() {
   }, []);
 
   useEffect(() => {
+    setChosenShow('');
+
+    setPk1FreeSeatsTotal(0);
+    setPk2FreeSeatsTotal(0);
+    setPk1SelectableSeats(0);
+    setPk2SelectableSeats(0);
+    setPk1AdultAmount(0);
+    setPk1ChildAmount(0);
+    setPk2AdultAmount(0);
+    setPk2ChildAmount(0);
+    setChosenSeatsToBook([]);
+    
     if (chosenMovie) {
       chosenMovieElementContainer.className = 'App-movie-hover-active';
       movieDetails.current.scrollIntoView();
@@ -232,6 +291,25 @@ function App() {
       setChosenHall(chosenMovieDetails.vorstellungen.find(e => e.startzeit === chosenShow).saal);
       setPk1FreeSeatsTotal(pk1FreeSeatsTotal);
       setPk2FreeSeatsTotal(pk2FreeSeatsTotal);
+      setPk1SelectableSeats(0);
+      setPk2SelectableSeats(0);
+      setPk1AdultAmount(0);
+      setPk1ChildAmount(0);
+      setPk2AdultAmount(0);
+      setPk2ChildAmount(0);
+      setChosenSeatsToBook([]);
+      
+      return () => {
+        for (const seat of chosenMovieDetails.vorstellungen.find(e => e.startzeit === chosenShow).sitzplaetze) {
+          
+          if (!seat.reserviert) {
+            const seatElement = document.getElementById(seat.reihe + seat.nummer);
+            
+            seatElement.setAttribute('fill', 'currentColor');
+            seatElement.innerHTML = '<path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2z"/>';
+          }
+        }
+      } 
     }
   }, [chosenShow, chosenMovieDetails]);
   
@@ -451,7 +529,7 @@ function App() {
                       </Row>
                       <Row className='px-3'>
                         <Col className='text-end'>
-                          <Button variant='danger' >Auswahl aufheben</Button>
+                          <Button onClick={handleDeleteWholeSelection} variant='danger' >Gesamte Auswahl aufheben</Button>
                         </Col>
                       </Row>
                     </Tab>
