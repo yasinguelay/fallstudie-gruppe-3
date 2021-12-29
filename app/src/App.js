@@ -26,9 +26,21 @@ function App() {
   const [chosenShowSeats, setChosenShowSeats] = useState([]);
   const [pk1Selected, setPk1Selected] = useState(true);
   const [chosenSeatsToBook, setChosenSeatsToBook] = useState([]);
+  
+  const [pk1FreeSeatsTotal, setPk1FreeSeatsTotal] = useState(0);
+  const [pk2FreeSeatsTotal, setPk2FreeSeatsTotal] = useState(0);
+  const [pk1AdultAmount, setPk1AdultAmount] = useState(0);
+  const [pk1ChildAmount, setPk1ChildAmount] = useState(0);
+  const [pk2AdultAmount, setPk2AdultAmount] = useState(0);
+  const [pk2ChildAmount, setPk2ChildAmount] = useState(0);
 
   const movieDetails = useRef(null);
   const showDetails = useRef(null);
+
+  const pk1AdultPrice = 11.90;
+  const pk1ChildPrice = 9.90;
+  const pk2AdultPrice = 12.90
+  const pk2ChildPrice = 9.90;
 
   const sliderSettings = {
     slidesToShow: 5,
@@ -110,7 +122,63 @@ function App() {
     }
   }
 
+  const handlePk1AdultAdded = (e) => {
+    if (pk1AdultAmount < 9 && pk1FreeSeatsTotal > 0) {
+      setPk1AdultAmount(pk1AdultAmount + 1);
+      setPk1FreeSeatsTotal(pk1FreeSeatsTotal - 1);
+    }
+  }
+
+  const handlePk1AdultRemoved = (e) => {
+    if (pk1AdultAmount > 0) {
+      setPk1AdultAmount(pk1AdultAmount - 1);
+      setPk1FreeSeatsTotal(pk1FreeSeatsTotal + 1);
+    }
+  }
+
+  const handlePk1ChildAdded = (e) => {
+    if (pk1ChildAmount < 9 && pk1FreeSeatsTotal > 0) {
+      setPk1ChildAmount(pk1ChildAmount + 1);
+      setPk1FreeSeatsTotal(pk1FreeSeatsTotal - 1);
+    }
+  }
   
+  const handlePk1ChildRemoved = (e) => {
+    if (pk1ChildAmount > 0) {
+      setPk1ChildAmount(pk1ChildAmount - 1);
+      setPk1FreeSeatsTotal(pk1FreeSeatsTotal + 1);
+    }
+  }
+
+  const handlePk2AdultAdded = (e) => {
+    if (pk2AdultAmount < 9 && pk2FreeSeatsTotal > 0) {
+      setPk2AdultAmount(pk2AdultAmount + 1);
+      setPk2FreeSeatsTotal(pk2FreeSeatsTotal - 1);
+    }
+  }
+
+  const handlePk2AdultRemoved = (e) => {
+    if (pk2AdultAmount > 0) {
+      setPk2AdultAmount(pk2AdultAmount - 1);
+      setPk2FreeSeatsTotal(pk2FreeSeatsTotal + 1);
+    }
+  }
+
+  const handlePk2ChildAdded = (e) => {
+    if (pk2ChildAmount < 9 && pk2FreeSeatsTotal > 0) {
+      setPk2ChildAmount(pk2ChildAmount + 1);
+      setPk2FreeSeatsTotal(pk2FreeSeatsTotal - 1);
+    }
+  }
+  
+  const handlePk2ChildRemoved = (e) => {
+    if (pk2ChildAmount > 0) {
+      setPk2ChildAmount(pk2ChildAmount - 1);
+      setPk2FreeSeatsTotal(pk2FreeSeatsTotal + 1);
+    }
+  }
+  
+
   useEffect(() => {
     fetch('https://fallstudie-gruppe-3.herokuapp.com/filme')
     .then(res => res.json())
@@ -138,6 +206,8 @@ function App() {
       showDetails.current.scrollIntoView();
 
       const seatsForChosenShow = [[]];
+      let pk1FreeSeatsTotal = 0;
+      let pk2FreeSeatsTotal = 0;
 
       for (const seat of chosenMovieDetails.vorstellungen.find(e => e.startzeit === chosenShow).sitzplaetze) {
         for (const row of seatsForChosenShow) {
@@ -150,10 +220,18 @@ function App() {
             break;
           }
         }
+
+        if (seat.reserviert === false && seat.reihe <= 'G') {
+          pk1FreeSeatsTotal++;
+        } else if (seat.reserviert === false && seat.reihe > 'G') {
+          pk2FreeSeatsTotal++;
+        }
       }
 
       setChosenShowSeats(seatsForChosenShow);
       setChosenHall(chosenMovieDetails.vorstellungen.find(e => e.startzeit === chosenShow).saal);
+      setPk1FreeSeatsTotal(pk1FreeSeatsTotal);
+      setPk2FreeSeatsTotal(pk2FreeSeatsTotal);
     }
   }, [chosenShow, chosenMovieDetails]);
   
@@ -311,15 +389,31 @@ function App() {
                           Erwachsener
                         </Col>
                         <Col>
-                          17,90 €
+                          {pk1AdultPrice.toLocaleString(undefined, {minimumFractionDigits: 2})} €
                         </Col>
-                        <Col className='text-center'>
-                          <Button variant="secondary">-</Button>
-                          <span></span>
-                          <Button variant="secondary">+</Button>
+                        <Col>
+                          <Row className='justify-content-center align-items-center'>
+                            <Col className='flex-grow-0'>
+                              <Button onClick={handlePk1AdultRemoved} variant="secondary" className='py-0' {...(pk1AdultAmount === 0 ? {disabled: true} : null)}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-dash-lg" viewBox="0 0 16 16">
+                                  <path fillRule="evenodd" d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8Z"/>
+                                </svg>
+                              </Button>
+                            </Col>
+                            <Col style={{textAlign: 'center'}} className='flex-grow-0 mx-1'>
+                            {pk1AdultAmount}
+                            </Col>
+                            <Col className='flex-grow-0'>
+                              <Button onClick={handlePk1AdultAdded} variant="secondary" className='py-0' {...(pk1AdultAmount === 9 || pk1FreeSeatsTotal === 0 ? {disabled: true} : null)}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width='16' height='16' fill="currentColor" className="bi bi-plus-lg" viewBox="0 0 16 16">
+                                  <path fillRule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
+                                </svg>
+                              </Button>
+                            </Col>
+                          </Row>
                         </Col>
                         <Col className='text-end'>
-                          Gesamt
+                          {(pk1AdultAmount * pk1AdultPrice) === 0 ? '0,00' : (pk1AdultAmount * pk1AdultPrice).toLocaleString(undefined, {minimumFractionDigits: 2})} €
                         </Col>
                       </Row>
                       <hr className='m-2' />
@@ -328,25 +422,125 @@ function App() {
                           Kind unter 15 J
                         </Col>
                         <Col>
-                          14,90 €
+                          {pk1ChildPrice.toLocaleString(undefined, {minimumFractionDigits: 2})} €
                         </Col>
                         <Col className='text-center'>
-                          <Button variant="secondary">-</Button>
-                          <span></span>
-                          <Button variant="secondary">+</Button>
+                          <Row className='justify-content-center align-items-center'>
+                            <Col className='flex-grow-0'>
+                              <Button onClick={handlePk1ChildRemoved} variant="secondary" className='py-0' {...(pk1ChildAmount === 0 ? {disabled: true} : null)}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-dash-lg" viewBox="0 0 16 16">
+                                  <path fillRule="evenodd" d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8Z"/>
+                                </svg>
+                              </Button>
+                            </Col>
+                            <Col style={{textAlign: 'center'}} className='flex-grow-0 mx-1'>
+                            {pk1ChildAmount}
+                            </Col>
+                            <Col className='flex-grow-0'>
+                              <Button onClick={handlePk1ChildAdded} variant="secondary" className='py-0' {...(pk1ChildAmount === 9 || pk1FreeSeatsTotal === 0 ? {disabled: true} : null)}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width='16' height='16' fill="currentColor" className="bi bi-plus-lg" viewBox="0 0 16 16">
+                                  <path fillRule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
+                                </svg>
+                              </Button>
+                            </Col>
+                          </Row>
                         </Col>
                         <Col className='text-end'>
-                          Gesamt
+                          {(pk1ChildAmount * pk1ChildPrice) === 0 ? '0,00' : (pk1ChildAmount * pk1ChildPrice).toLocaleString(undefined, {minimumFractionDigits: 2})} €
                         </Col>
                       </Row>
                       <Row className='px-3'>
                         <Col className='text-end'>
-                          <Button style={{backgroundColor: '#C63E38', borderColor: '#C63E38'}} >Auswahl aufheben</Button>
+                          <Button variant='danger' >Auswahl aufheben</Button>
                         </Col>
                       </Row>
                     </Tab>
                     <Tab eventKey="PK2" title="PK2">
-                      Test
+                      <Row className='px-3'>
+                        <Col className='fw-bold'>
+                          Ticket
+                        </Col>
+                        <Col className='fw-bold'>
+                          Preis
+                        </Col>
+                        <Col className='fw-bold text-center'>
+                          Anzahl
+                        </Col>
+                        <Col className='fw-bold text-end'>
+                          Gesamt
+                        </Col>
+                      </Row>
+                      <hr className='m-2' />
+                      <Row className='px-3 align-items-center'>
+                        <Col>
+                          Erwachsener
+                        </Col>
+                        <Col>
+                          {pk2AdultPrice.toLocaleString(undefined, {minimumFractionDigits: 2})} €
+                        </Col>
+                        <Col>
+                          <Row className='justify-content-center align-items-center'>
+                            <Col className='flex-grow-0'>
+                              <Button onClick={handlePk2AdultRemoved} variant="secondary" className='py-0' {...(pk2AdultAmount === 0 ? {disabled: true} : null)}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-dash-lg" viewBox="0 0 16 16">
+                                  <path fillRule="evenodd" d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8Z"/>
+                                </svg>
+                              </Button>
+                            </Col>
+                            <Col style={{textAlign: 'center'}} className='flex-grow-0 mx-1'>
+                            {pk2AdultAmount}
+                            </Col>
+                            <Col className='flex-grow-0'>
+                              <Button onClick={handlePk2AdultAdded} variant="secondary" className='py-0' {...(pk2AdultAmount === 9 || pk2FreeSeatsTotal === 0 ? {disabled: true} : null)}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width='16' height='16' fill="currentColor" className="bi bi-plus-lg" viewBox="0 0 16 16">
+                                  <path fillRule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
+                                </svg>
+                              </Button>
+                            </Col>
+                          </Row>
+                        </Col>
+                        <Col className='text-end'>
+                          {(pk2AdultAmount * pk2AdultPrice) === 0 ? '0,00' : (pk2AdultAmount * pk2AdultPrice).toLocaleString(undefined, {minimumFractionDigits: 2})} €
+                        </Col>
+                      </Row>
+                      <hr className='m-2' />
+                      <Row className='px-3 mb-4 align-items-center'>
+                        <Col>
+                          Kind unter 15 J
+                        </Col>
+                        <Col>
+                          {pk2ChildPrice.toLocaleString(undefined, {minimumFractionDigits: 2})} €
+                        </Col>
+                        <Col className='text-center'>
+                          <Row className='justify-content-center align-items-center'>
+                            <Col className='flex-grow-0'>
+                              <Button onClick={handlePk2ChildRemoved} variant="secondary" className='py-0' {...(pk2ChildAmount === 0 ? {disabled: true} : null)}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-dash-lg" viewBox="0 0 16 16">
+                                  <path fillRule="evenodd" d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8Z"/>
+                                </svg>
+                              </Button>
+                            </Col>
+                            <Col style={{textAlign: 'center'}} className='flex-grow-0 mx-1'>
+                            {pk2ChildAmount}
+                            </Col>
+                            <Col className='flex-grow-0'>
+                              <Button onClick={handlePk2ChildAdded} variant="secondary" className='py-0' {...(pk2ChildAmount === 9 || pk2FreeSeatsTotal === 0 ? {disabled: true} : null)}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width='16' height='16' fill="currentColor" className="bi bi-plus-lg" viewBox="0 0 16 16">
+                                  <path fillRule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
+                                </svg>
+                              </Button>
+                            </Col>
+                          </Row>
+                        </Col>
+                        <Col className='text-end'>
+                          {(pk2ChildAmount * pk2ChildPrice) === 0 ? '0,00' : (pk2ChildAmount * pk2ChildPrice).toLocaleString(undefined, {minimumFractionDigits: 2})} €
+                        </Col>
+                      </Row>
+                      <Row className='px-3'>
+                        <Col className='text-end'>
+                          <Button variant='danger' >Auswahl aufheben</Button>
+                        </Col>
+                      </Row>
                     </Tab>
                   </Tabs>
                 </Col>
@@ -368,7 +562,7 @@ function App() {
                         <Row style={{flexBasis: '90%', flexGrow: 1}} className='justify-content-center'>
                           {
                             e.map(s => (
-                              <Col key={`seat-${s.reihe}-${s.nummer}`} className='mx-1 p-0' style={pk1Selected && s.reihe <= 'G' && !s.reserviert? {color: '#9D082B'} : {}}>
+                              <Col key={`seat-${s.reihe}-${s.nummer}`} className='mx-1 p-0' style={pk1Selected && s.reihe <= 'G' && !s.reserviert? {color: '#DC3646'} : {}}>
                                 {s.reserviert ? (
                                   <OverlayTrigger placement="top" overlay=
                                     {

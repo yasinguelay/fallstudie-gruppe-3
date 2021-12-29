@@ -15,13 +15,13 @@ code {
 }
 
 .nav-link {
-  color: #C63E38;
+  color: #DC3646;
 }
 
 .nav-link.active {
-  color: #C63E38 !important;
+  color: #DC3646 !important;
 }
 
 .nav-link:hover {
-  color: #C63E38;
+  color: #DC3646;
 }
