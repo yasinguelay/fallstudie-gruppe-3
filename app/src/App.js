@@ -56,6 +56,8 @@ function App() {
     setChosenMovieElementContainer(e.currentTarget.parentElement);
 
     setChosenMovieDetails(fetchResult.find(m => m.titel === e.currentTarget.id))
+
+    setChosenShow('');
     
     const allShowsForChosenMovie = fetchResult.find(m => m.titel === e.currentTarget.id).vorstellungen.map(s => s.startzeit).sort();
 
@@ -105,10 +107,22 @@ function App() {
 
   const handleSeatChosen = (e) => {
     if(e.currentTarget.getAttribute('fill') === '#FFCA2D') {
-      e.currentTarget.setAttribute('fill', 'currentColor');
-      e.currentTarget.innerHTML = '<path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2z"/>';
 
-      const seatToDelete = {titel: chosenMovie, saal: chosenHall, startzeit: chosenShow, reihe: e.currentTarget.id[0], nummer: parseInt(e.currentTarget.id[1])};
+      setChosenShowSeats(chosenShowSeats.map(r => {
+        const arrayToReturn = [];
+        
+        for (const s of r) {
+          if (s.reihe === e.currentTarget.id[0] && s.nummer === parseInt(e.currentTarget.id.slice(1))) {
+            s.reserviert = false;
+          }
+          
+          arrayToReturn.push(s);
+        }
+        
+        return arrayToReturn;
+      }));
+
+      const seatToDelete = {titel: chosenMovie, saal: chosenHall, startzeit: chosenShow, reihe: e.currentTarget.id[0], nummer: parseInt(e.currentTarget.id.slice(1))};
       
       const removedSeatArray = chosenSeatsToBook.filter((e) => JSON.stringify(e) !== JSON.stringify(seatToDelete))
 
@@ -121,16 +135,40 @@ function App() {
       }
 
     } else if (e.currentTarget.id[0] <= 'G' && pk1SelectableSeats > 0) {
-      e.currentTarget.setAttribute('fill', '#FFCA2D');
-      e.currentTarget.innerHTML = '<path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/><path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1v-1c0-1-1-4-6-4s-6 3-6 4v1a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12z"/>'
+
+      setChosenShowSeats(chosenShowSeats.map(r => {
+        const arrayToReturn = [];
+        
+        for (const s of r) {
+          if (s.reihe === e.currentTarget.id[0] && s.nummer === parseInt(e.currentTarget.id.slice(1))) {
+            s.reserviert = 'userSelect';
+          }
+          
+          arrayToReturn.push(s);
+        }
+        
+        return arrayToReturn;
+      }));
 
       const seatToAppend = {titel: chosenMovie, saal: chosenHall, startzeit: chosenShow, reihe: e.currentTarget.id[0], nummer: parseInt(e.currentTarget.id.slice(1))};
       
       setChosenSeatsToBook([...chosenSeatsToBook, seatToAppend]);
       setPk1SelectableSeats(pk1SelectableSeats - 1);
     } else if (e.currentTarget.id[0] > 'G' && pk2SelectableSeats > 0) {
-      e.currentTarget.setAttribute('fill', '#FFCA2D');
-      e.currentTarget.innerHTML = '<path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/><path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1v-1c0-1-1-4-6-4s-6 3-6 4v1a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12z"/>'
+      
+      setChosenShowSeats(chosenShowSeats.map(r => {
+        const arrayToReturn = [];
+        
+        for (const s of r) {
+          if (s.reihe === e.currentTarget.id[0] && s.nummer === parseInt(e.currentTarget.id.slice(1))) {
+            s.reserviert = 'userSelect';
+          }
+          
+          arrayToReturn.push(s);
+        }
+        
+        return arrayToReturn;
+      }));
 
       const seatToAppend = {titel: chosenMovie, saal: chosenHall, startzeit: chosenShow, reihe: e.currentTarget.id[0], nummer: parseInt(e.currentTarget.id.slice(1))};
       
@@ -215,8 +253,10 @@ function App() {
         if (!seat.reserviert && seat.reihe <= 'G') {
           const seatElement = document.getElementById(seat.reihe + seat.nummer);
           
-          seatElement.setAttribute('fill', 'currentColor');
-          seatElement.innerHTML = '<path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2z"/>';
+          if (seatElement.getAttribute('fill') !== 'currentColor') {
+            seatElement.setAttribute('fill', 'currentColor');
+            seatElement.innerHTML = '<path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2z"/>';
+          }
         }
       }
     }
@@ -250,8 +290,6 @@ function App() {
   }, []);
 
   useEffect(() => {
-    setChosenShow('');
-
     setPk1FreeSeatsTotal(0);
     setPk2FreeSeatsTotal(0);
     setPk1SelectableSeats(0);
@@ -288,9 +326,9 @@ function App() {
           const indexOfDayArray = seatsForChosenShow.indexOf(row);
           
           if (row.length === 0 || seat.reihe === row[0].reihe) {
-            row.push(seat);
+            row.push({...seat});
           } else if (indexOfDayArray === seatsForChosenShow.length - 1) {
-            seatsForChosenShow.push([seat]);
+            seatsForChosenShow.push([{...seat}]);
             break;
           }
         }
@@ -313,26 +351,9 @@ function App() {
       setPk2AdultAmount(0);
       setPk2ChildAmount(0);
       setChosenSeatsToBook([]);
-
-      console.log('hooking');
-      
-     /*  return () => {
-        console.log('hooking internal')
-        
-        for (const seat of chosenMovieDetails.vorstellungen.find(e => e.startzeit === chosenShow).sitzplaetze) {
-          
-          if (!seat.reserviert) {
-            const seatElement = document.getElementById(seat.reihe + seat.nummer);
-            
-            seatElement.setAttribute('fill', 'currentColor');
-            seatElement.innerHTML = '<path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2z"/>';
-          }
-        }
-      }  */
     }
   }, [chosenShow, chosenMovieDetails]);
 
-  console.log('rendering');
   
   return (
     <div id="home" className="App">
@@ -664,7 +685,7 @@ function App() {
                           {
                             e.map(s => (
                               <Col key={`seat-${s.reihe}-${s.nummer}`} className='mx-1 p-0' style={(pk1Selected && s.reihe <= 'G' && !s.reserviert) || (!pk1Selected && s.reihe > 'G' && !s.reserviert) ? {color: '#DC3646'} : {}}>
-                                {s.reserviert ? (
+                                {s.reserviert === true ? (
                                   <OverlayTrigger placement="top" overlay=
                                     {
                                       <Popover id={`popover-positioned-top`}>
@@ -675,11 +696,28 @@ function App() {
                                       </Popover>
                                     }>
                                     <svg id={`${s.reihe}${s.nummer}`} xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-person-square" viewBox="0 0 16 16">
-                                      <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
-                                      <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1v-1c0-1-1-4-6-4s-6 3-6 4v1a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12z"/>
+                                      <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+                                      <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1v-1c0-1-1-4-6-4s-6 3-6 4v1a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12z" />
                                     </svg>
                                    </OverlayTrigger>
-                                  ) : (
+                                  ) : s.reserviert === 'userSelect' ? (
+                                    <OverlayTrigger placement="top" overlay=
+                                    {
+                                      <Popover id={`popover-positioned-top`}>
+                                        <Popover.Header as="h3" style={{color: 'black'}}>{s.reihe <= 'G' ? 'PK1' : 'PK2'}</Popover.Header>
+                                        <Popover.Body>
+                                          {`Reihe: ${s.reihe}`}
+                                          <br />
+                                          {`Sitz: ${s.nummer}`}
+                                        </Popover.Body>
+                                      </Popover>
+                                    }>
+                                      <svg id={`${s.reihe}${s.nummer}`} onClick={handleSeatChosen} xmlns="http://www.w3.org/2000/svg" fill="#FFCA2D" className="bi bi-square-fill" viewBox="0 0 16 16">
+                                        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+                                        <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1v-1c0-1-1-4-6-4s-6 3-6 4v1a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12z" />
+                                      </svg>
+                                    </OverlayTrigger>
+                                  ): (
                                     <OverlayTrigger placement="top" overlay=
                                     {
                                       <Popover id={`popover-positioned-top`}>
