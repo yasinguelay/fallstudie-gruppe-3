@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 
+import CheckoutForm from './CheckoutForm.js';
+
 import './App.css';
 
 import Button from 'react-bootstrap/Button';
@@ -250,13 +252,8 @@ function App() {
 
     for (const row of chosenShowSeats) {
       for (const seat of row) {
-        if (!seat.reserviert && seat.reihe <= 'G') {
-          const seatElement = document.getElementById(seat.reihe + seat.nummer);
-          
-          if (seatElement.getAttribute('fill') !== 'currentColor') {
-            seatElement.setAttribute('fill', 'currentColor');
-            seatElement.innerHTML = '<path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2z"/>';
-          }
+        if (seat.reserviert === 'userSelect' && seat.reihe <= 'G') {
+          seat.reserviert = false;
         }
       }
     }
@@ -271,11 +268,8 @@ function App() {
 
     for (const row of chosenShowSeats) {
       for (const seat of row) {
-        if (!seat.reserviert && seat.reihe > 'G') {
-          const seatElement = document.getElementById(seat.reihe + seat.nummer);
-          
-          seatElement.setAttribute('fill', 'currentColor');
-          seatElement.innerHTML = '<path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2z"/>';
+        if (seat.reserviert === 'userSelect' && seat.reihe > 'G') {
+          seat.reserviert = false;
         }
       }
     }
@@ -466,13 +460,13 @@ function App() {
 
       {
         chosenShow ? (
-          <Container ref={showDetails} style={{scrollMarginTop: 59, backgroundColor: '#404B62'}}>
+          <Container ref={showDetails} style={{scrollMarginTop: 59, backgroundColor: '#404B62'}} className='pb-3'>
             <Row className='py-2 fs-5'>
               <Col>
                 Ihre Film- & Platzwahl
               </Col>
             </Row>
-            <Row style={{backgroundColor: '#000B22'}} className='mx-0 pt-1'>
+            <Row style={{backgroundColor: '#000B22'}} className='mx-0 pt-1 pb-5 mb-2'>
               <Row className='py-4 mb-4'>
                 <Col>
                   <span className='fw-bold'>Film: </span>{chosenMovie + ' | '}<span className='fw-bold'>Saal: </span>{chosenMovieDetails.vorstellungen.find(e => e.startzeit === chosenShow).saal + ' | '}<span className='fw-bold'>Datum: </span>{new Date(chosenShow).toLocaleString('de-DE', {weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'})}
@@ -745,6 +739,34 @@ function App() {
                     ))
                   }
                 </Row>
+              </Row>
+            </Row>
+            <Row className='py-2 fs-5'>
+              <Col>
+                Details & Zusammenfassung
+              </Col>
+            </Row>
+            <Row style={{backgroundColor: '#000B22'}} className='mx-0 mb-3'>
+              <Row className='pt-3 mb-4'>
+                <Col>
+                  Auf dieser Seite finden Sie einen Überblick über Ihre bisherige Auswahl.
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <div className='fw-bold mb-3'>Ihre Daten:</div>
+                  <CheckoutForm />
+                </Col>
+                <Col>
+                  <Row>
+                    <Col className='fw-bold'>
+                      Karten:
+                    </Col>
+                    <Col className='fw-bold text-end'>
+                      Preis:
+                    </Col>
+                  </Row>
+                </Col>
               </Row>
             </Row>
           </Container>
