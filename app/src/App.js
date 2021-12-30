@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 
-import CheckoutForm from './CheckoutForm.js';
+import { CheckoutForm, CheckoutButton } from './CheckoutForm.js';
 
 import './App.css';
 
@@ -29,6 +29,7 @@ function App() {
   const [chosenShowSeats, setChosenShowSeats] = useState([]);
   const [pk1Selected, setPk1Selected] = useState(true);
   const [chosenSeatsToBook, setChosenSeatsToBook] = useState([]);
+  const [seatsSelected, setSeatsSelected] = useState(false);
   
   const [pk1FreeSeatsTotal, setPk1FreeSeatsTotal] = useState(0);
   const [pk2FreeSeatsTotal, setPk2FreeSeatsTotal] = useState(0);
@@ -41,6 +42,7 @@ function App() {
 
   const movieDetails = useRef(null);
   const showDetails = useRef(null);
+  const checkout = useRef(null);
 
   const pk1AdultPrice = 11.90;
   const pk1ChildPrice = 9.90;
@@ -61,6 +63,8 @@ function App() {
     setChosenMovieDetails(fetchResult.find(m => m.titel === e.currentTarget.id))
 
     setChosenShow('');
+
+    setSeatsSelected(false);
     
     const allShowsForChosenMovie = fetchResult.find(m => m.titel === e.currentTarget.id).vorstellungen.map(s => s.startzeit).sort();
 
@@ -84,6 +88,7 @@ function App() {
 
   const handleShowChosen = (e) => {
     setChosenShow(e.target.value);
+    setSeatsSelected(false);
   };
 
   const handleMovieHover = (e) => {
@@ -136,6 +141,8 @@ function App() {
       } else {
         setPk2SelectableSeats(pk2SelectableSeats + 1);
       }
+
+      setSeatsSelected(false);
 
     } else if (e.currentTarget.id[0] <= 'G' && pk1SelectableSeats > 0) {
 
@@ -250,6 +257,7 @@ function App() {
     setPk1AdultAmount(0);
     setPk1ChildAmount(0);
     setChosenSeatsToBook(chosenSeatsToBook.filter(e => e.reihe > 'G'));
+    setSeatsSelected(false);
 
     for (const row of chosenShowSeats) {
       for (const seat of row) {
@@ -266,6 +274,7 @@ function App() {
     setPk2AdultAmount(0);
     setPk2ChildAmount(0);
     setChosenSeatsToBook(chosenSeatsToBook.filter(e => e.reihe <= 'G'));
+    setSeatsSelected(false);
 
     for (const row of chosenShowSeats) {
       for (const seat of row) {
@@ -276,6 +285,17 @@ function App() {
     }
   };
 
+  const handleNextClick = (e) => {
+    if ((pk1AdultAmount || pk1ChildAmount || pk2AdultAmount || pk2ChildAmount) && !pk1SelectableSeats && !pk2SelectableSeats) {
+      setSeatsSelected(true);
+    }
+  }
+
+  const handleFormSubmit = (e) => {
+    document.getElementById('Checkout').requestSubmit();
+    document.getElementById('Checkout-Box').requestSubmit();
+  }
+
   useEffect(() => {
     fetch('https://fallstudie-gruppe-3.herokuapp.com/filme')
     .then(res => res.json())
@@ -283,6 +303,7 @@ function App() {
       setFetchResult(result);
     });
   }, []);
+
 
   useEffect(() => {
     setPk1FreeSeatsTotal(0);
@@ -349,9 +370,15 @@ function App() {
     }
   }, [chosenShow, chosenMovieDetails]);
 
+  useEffect(() => {
+    if(seatsSelected) {
+      checkout.current.scrollIntoView();
+    }
+  }, [seatsSelected]);
+
   
   return (
-    <div id="home" className="App">
+    <div id="home" className="App pb-4">
       
       <Navbar bg="dark" expand="lg" variant="dark" fixed="top">
         <Container fluid className="mx-2">
@@ -364,7 +391,7 @@ function App() {
             </span>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Brand href="#home" style={{ flexBasis: 0 }} className="flex-grow-1 order-lg-last text-end m-0">
+          <Navbar.Brand href="" style={{ flexBasis: 0 }} className="flex-grow-1 order-lg-last text-end m-0">
             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" className="bi bi-person-circle" viewBox="0 0 16 16">
               <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
               <path fillRule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
@@ -373,7 +400,7 @@ function App() {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav style={{ flexBasis: 0 }} className="me-auto flex-grow-1 justify-content-center">
               <Nav.Link href="#home">Programm</Nav.Link>
-              <Nav.Link href="#link">Admin</Nav.Link>
+              <Nav.Link href="">Admin</Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Container>
@@ -741,72 +768,101 @@ function App() {
                   }
                 </Row>
               </Row>
-            </Row>
-            <Row className='py-2 fs-5'>
-              <Col>
-                Details & Zusammenfassung
-              </Col>
-            </Row>
-            <Row style={{backgroundColor: '#000B22'}} className='mx-0 mb-3'>
-              <Row className='pt-4 mb-5'>
-                <Col>
-                  Auf dieser Seite finden Sie einen Überblick über Ihre bisherige Auswahl.
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <div className='fw-bold mb-3'>Ihre Daten:</div>
-                  <CheckoutForm />
-                </Col>
-                <Col xs={6} className='ps-5'>
-                  <Row className='mb-2'>
-                    <Col className='fw-bold'>
-                      Karten:
-                    </Col>
-                    <Col className='fw-bold text-end'>
-                      Preis:
-                    </Col>
-                  </Row>
-                  <Row className='py-2 mb-1' style={{backgroundColor: '#404B62'}}>
-                    <Col>
-                      Erwachsener
-                    </Col>
-                    <Col className='text-end'>
-                      {(pk1AdultAmount * pk1AdultPrice + pk2AdultAmount * pk2AdultPrice) === 0 ? '0,00' : (pk1AdultAmount * pk1AdultPrice + pk2AdultAmount * pk2AdultPrice).toLocaleString(undefined, {minimumFractionDigits: 2})} €
-                    </Col>
-                  </Row>
-                  <Row className='py-2' style={{backgroundColor: '#404B62'}}>
-                    <Col>
-                      Kind unter 15 J
-                    </Col>
-                    <Col className='text-end'>
-                      {(pk1ChildAmount * pk1ChildPrice + pk2ChildAmount * pk2ChildPrice) === 0 ? '0,00' : (pk1ChildAmount * pk1ChildPrice + pk2ChildAmount * pk2ChildPrice).toLocaleString(undefined, {minimumFractionDigits: 2})} €
-                    </Col>
-                  </Row>
-                  <Row className='py-2'>
-                    <Col className='fw-bold'>
-                      Noch zu zahlen:
-                    </Col>
-                    <Col className='text-end fw-bold'>
-                      {(pk1ChildAmount * pk1ChildPrice + pk2ChildAmount * pk2ChildPrice + pk1AdultAmount * pk1AdultPrice + pk2AdultAmount * pk2AdultPrice) === 0 ? '0,00' : (pk1ChildAmount * pk1ChildPrice + pk2ChildAmount * pk2ChildPrice + pk1AdultAmount * pk1AdultPrice + pk2AdultAmount * pk2AdultPrice).toLocaleString(undefined, {minimumFractionDigits: 2})} €
-                    </Col>
-                  </Row>
-                  <Row className='mt-5'>
-                    <Col>
-                      <Form.Group className="mb-3">
-                        <Form.Check required label="Ich stimme den AGB und der Datenschutzerklärung zu." feedback="Sie müssen zustimmen, um zu buchen." feedbackType="invalid" />
-                      </Form.Group>
-                    </Col>
-                    <Col xs={3}>
-                      <Button className='fw-bold' variant="warning" type="submit" form='Checkout'>Buchen</Button>
-                    </Col>
-                  </Row>
+              <Row className='mt-5 justify-content-end pe-0'>
+                <Col xs='auto pe-0'>
+                  <Button variant="warning" onClick={handleNextClick}>Weiter</Button>
                 </Col>
               </Row>
             </Row>
+            {
+              seatsSelected ? (
+                <>
+                  <Row className='py-2 fs-5' ref={checkout} style={{scrollMarginTop: 59}}>
+                    <Col>
+                      Details & Zusammenfassung
+                    </Col>
+                  </Row>
+                  <Row style={{backgroundColor: '#000B22'}} className='mx-0 mb-3'>
+                    <Row className='pt-4 mb-5'>
+                      <Col>
+                        Auf dieser Seite finden Sie einen Überblick über Ihre bisherige Auswahl.
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col>
+                        <div className='fw-bold mb-3'>Ihre Daten:</div>
+                        <CheckoutForm />
+                      </Col>
+                      <Col xs={6} className='ps-5'>
+                        <Row className='mb-2'>
+                          <Col className='fw-bold'>
+                            Karten:
+                          </Col>
+                          <Col className='fw-bold text-end'>
+                            Preis:
+                          </Col>
+                        </Row>
+                        <Row className='py-2 mb-1' style={{backgroundColor: '#404B62'}}>
+                          <Col>
+                            Erwachsener
+                          </Col>
+                          <Col className='text-end'>
+                            {(pk1AdultAmount * pk1AdultPrice + pk2AdultAmount * pk2AdultPrice) === 0 ? '0,00' : (pk1AdultAmount * pk1AdultPrice + pk2AdultAmount * pk2AdultPrice).toLocaleString(undefined, {minimumFractionDigits: 2})} €
+                          </Col>
+                        </Row>
+                        <Row className='py-2' style={{backgroundColor: '#404B62'}}>
+                          <Col>
+                            Kind unter 15 J
+                          </Col>
+                          <Col className='text-end'>
+                            {(pk1ChildAmount * pk1ChildPrice + pk2ChildAmount * pk2ChildPrice) === 0 ? '0,00' : (pk1ChildAmount * pk1ChildPrice + pk2ChildAmount * pk2ChildPrice).toLocaleString(undefined, {minimumFractionDigits: 2})} €
+                          </Col>
+                        </Row>
+                        <Row className='py-2'>
+                          <Col className='fw-bold'>
+                            Noch zu zahlen:
+                          </Col>
+                          <Col className='text-end fw-bold'>
+                            {(pk1ChildAmount * pk1ChildPrice + pk2ChildAmount * pk2ChildPrice + pk1AdultAmount * pk1AdultPrice + pk2AdultAmount * pk2AdultPrice) === 0 ? '0,00' : (pk1ChildAmount * pk1ChildPrice + pk2ChildAmount * pk2ChildPrice + pk1AdultAmount * pk1AdultPrice + pk2AdultAmount * pk2AdultPrice).toLocaleString(undefined, {minimumFractionDigits: 2})} €
+                          </Col>
+                        </Row>
+                        <Row className='mt-5'>
+                          <Col>
+                            <CheckoutButton />
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col>
+                            <Button style={{width: '100%'}} variant="warning" onClick={handleFormSubmit}>Buchen</Button>
+                          </Col>
+                        </Row>
+                      </Col>
+                    </Row>
+                  </Row>
+                </>
+              ) : null
+            }
           </Container>
         ) : null
       }
+
+      <Row className='mx-0 px-5 justify-content-center text-center mt-5'>
+        <Col>
+          AGB
+        </Col>
+        <Col xs='auto'>
+          |
+        </Col>
+        <Col>
+          Datenschutz
+        </Col>
+        <Col xs='auto'>
+          |
+        </Col>
+        <Col>
+          Impressum
+        </Col>
+      </Row>
 
 
     </div>

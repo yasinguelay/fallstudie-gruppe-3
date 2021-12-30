@@ -1,15 +1,10 @@
 import { useState } from 'react';
 
-import Button from 'react-bootstrap/Button';
-import Col from 'react-bootstrap/Col';
 import FloatingLabel from 'react-bootstrap/esm/FloatingLabel';
-import FormGroup from 'react-bootstrap/esm/FormGroup';
 import Form from 'react-bootstrap/Form';
-import InputGroup from 'react-bootstrap/InputGroup';
-import Row from 'react-bootstrap/Row';
 
 
-export default function CheckoutForm() {
+export function CheckoutForm() {
     const [validated, setValidated] = useState(false);
   
     const handleSubmit = (event) => {
@@ -25,8 +20,8 @@ export default function CheckoutForm() {
     return (
          <Form id='Checkout' noValidate validated={validated} onSubmit={handleSubmit}>
             <FloatingLabel controlId="Anrede" label="Anrede" className="mb-3 text-dark">
-                <Form.Select required aria-label="Anrede">
-                    <option  disabled selected hidden value=""></option>
+                <Form.Select defaultValue='' required aria-label="Anrede">
+                    <option disabled hidden value=""> </option>
                     <option value="1">Herr</option>
                     <option value="2">Frau</option>
                     <option value="3">Divers</option>
@@ -61,12 +56,36 @@ export default function CheckoutForm() {
                 Zahlung:
             </div>
             <FloatingLabel controlId="Zahlungsmittel" label="Zahlungsmittel" className="mb-3 text-dark">
-                <Form.Select required aria-label="Zahlungsmittel">
-                    <option  disabled selected hidden value=""></option>
+                <Form.Select defaultValue='' required aria-label="Zahlungsmittel">
+                    <option  disabled hidden value=""> </option>
                     <option value="1">Vor Ort bezahlen</option>
                 </Form.Select>
                 <Form.Control.Feedback type='invalid'>Bitte auswählen.</Form.Control.Feedback>
             </FloatingLabel>
       </Form>
+    );
+}
+
+export function CheckoutButton() {
+    const [validated, setValidated] = useState(false);
+  
+    const handleSubmit = (event) => {
+      const form = event.currentTarget;
+      if (form.checkValidity() === false) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+  
+      setValidated(true);
+      event.preventDefault();
+      event.stopPropagation();
+    };
+  
+    return (
+        <Form id='Checkout-Box' noValidate validated={validated} onSubmit={handleSubmit}>
+            <Form.Group className="mb-3">
+                <Form.Check required label="Ich stimme den AGB und der Datenschutzerklärung zu." feedback="Sie müssen zustimmen, um zu buchen." feedbackType="invalid" />
+            </Form.Group>
+        </Form>
     );
 }

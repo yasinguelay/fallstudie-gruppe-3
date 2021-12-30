@@ -25,3 +25,9 @@ code {
 .nav-link:hover {
   color: #DC3646;
 }
+
+.form-check-input:checked {
+  background-color: #ffc107;
+}
+
+
