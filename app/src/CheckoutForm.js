@@ -23,7 +23,7 @@ export default function CheckoutForm() {
     };
   
     return (
-         <Form noValidate validated={validated} onSubmit={handleSubmit}>
+         <Form id='Checkout' noValidate validated={validated} onSubmit={handleSubmit}>
             <FloatingLabel controlId="Anrede" label="Anrede" className="mb-3 text-dark">
                 <Form.Select required aria-label="Anrede">
                     <option  disabled selected hidden value=""></option>
@@ -67,12 +67,6 @@ export default function CheckoutForm() {
                 </Form.Select>
                 <Form.Control.Feedback type='invalid'>Bitte auswählen.</Form.Control.Feedback>
             </FloatingLabel>
-          
-            <Form.Group className="mb-3">
-                <Form.Check required label="Agree to terms and conditions" feedback="You must agree before submitting." feedbackType="invalid" />
-            </Form.Group>
-            
-            <Button type="submit">Submit form</Button>
       </Form>
     );
 }

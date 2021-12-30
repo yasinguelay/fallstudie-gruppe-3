@@ -8,6 +8,7 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
+import Form from 'react-bootstrap/Form';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
@@ -747,7 +748,7 @@ function App() {
               </Col>
             </Row>
             <Row style={{backgroundColor: '#000B22'}} className='mx-0 mb-3'>
-              <Row className='pt-3 mb-4'>
+              <Row className='pt-4 mb-5'>
                 <Col>
                   Auf dieser Seite finden Sie einen Überblick über Ihre bisherige Auswahl.
                 </Col>
@@ -757,13 +758,47 @@ function App() {
                   <div className='fw-bold mb-3'>Ihre Daten:</div>
                   <CheckoutForm />
                 </Col>
-                <Col>
-                  <Row>
+                <Col xs={6} className='ps-5'>
+                  <Row className='mb-2'>
                     <Col className='fw-bold'>
                       Karten:
                     </Col>
                     <Col className='fw-bold text-end'>
                       Preis:
+                    </Col>
+                  </Row>
+                  <Row className='py-2 mb-1' style={{backgroundColor: '#404B62'}}>
+                    <Col>
+                      Erwachsener
+                    </Col>
+                    <Col className='text-end'>
+                      {(pk1AdultAmount * pk1AdultPrice + pk2AdultAmount * pk2AdultPrice) === 0 ? '0,00' : (pk1AdultAmount * pk1AdultPrice + pk2AdultAmount * pk2AdultPrice).toLocaleString(undefined, {minimumFractionDigits: 2})} €
+                    </Col>
+                  </Row>
+                  <Row className='py-2' style={{backgroundColor: '#404B62'}}>
+                    <Col>
+                      Kind unter 15 J
+                    </Col>
+                    <Col className='text-end'>
+                      {(pk1ChildAmount * pk1ChildPrice + pk2ChildAmount * pk2ChildPrice) === 0 ? '0,00' : (pk1ChildAmount * pk1ChildPrice + pk2ChildAmount * pk2ChildPrice).toLocaleString(undefined, {minimumFractionDigits: 2})} €
+                    </Col>
+                  </Row>
+                  <Row className='py-2'>
+                    <Col className='fw-bold'>
+                      Noch zu zahlen:
+                    </Col>
+                    <Col className='text-end fw-bold'>
+                      {(pk1ChildAmount * pk1ChildPrice + pk2ChildAmount * pk2ChildPrice + pk1AdultAmount * pk1AdultPrice + pk2AdultAmount * pk2AdultPrice) === 0 ? '0,00' : (pk1ChildAmount * pk1ChildPrice + pk2ChildAmount * pk2ChildPrice + pk1AdultAmount * pk1AdultPrice + pk2AdultAmount * pk2AdultPrice).toLocaleString(undefined, {minimumFractionDigits: 2})} €
+                    </Col>
+                  </Row>
+                  <Row className='mt-5'>
+                    <Col>
+                      <Form.Group className="mb-3">
+                        <Form.Check required label="Ich stimme den AGB und der Datenschutzerklärung zu." feedback="Sie müssen zustimmen, um zu buchen." feedbackType="invalid" />
+                      </Form.Group>
+                    </Col>
+                    <Col xs={3}>
+                      <Button className='fw-bold' variant="warning" type="submit" form='Checkout'>Buchen</Button>
                     </Col>
                   </Row>
                 </Col>
