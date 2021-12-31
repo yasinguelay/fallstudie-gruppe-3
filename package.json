@@ -9,7 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint .",
     "format": "prettier --single-quote --check .",
-    "prepare": "cd ../ && husky install server/.husky"
+    "prepare": "husky install .husky"
   },
   "dependencies": {
     "cors": "^2.8.5",
@@ -28,7 +28,7 @@
     "swagger-autogen": "^2.17.2"
   },
   "lint-staged": {
-    "*.js": [
+    "!(app)/**/*.js": [
       "prettier --single-quote --write",
       "eslint --fix"
     ]

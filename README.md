@@ -1,2 +1,0 @@
-# Kinoticketreservierungssystem
-Repo für Kinoticketreservierungssystem
