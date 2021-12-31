@@ -1,8 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import reportWebVitals from './reportWebVitals';
 
 import App from './App';
+import Agb from './Agb';
+import Datenschutzerklaerung from './Datenschutzerklaerung';
+import Impressum from './Impressum';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "slick-carousel/slick/slick.css";
@@ -11,7 +15,14 @@ import './index.css';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <Routes>
+          <Route index element={<App />} />
+          <Route path="/agb" element={<Agb />} />
+          <Route path="/datenschutzerklaerung" element={<Datenschutzerklaerung />} />
+          <Route path="/impressum" element={<Impressum />} />
+      </Routes>
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
 );

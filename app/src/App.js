@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { Link } from "react-router-dom";
 
 import { CheckoutForm, CheckoutButton } from './CheckoutForm.js';
 
@@ -382,7 +383,7 @@ function App() {
       
       <Navbar bg="dark" expand="lg" variant="dark" fixed="top">
         <Container fluid className="mx-2">
-          <Navbar.Brand href="#home" style={{ flexBasis: 0 }} className="flex-grow-1 text-start m-0">
+          <Navbar.Brand href="/" style={{ flexBasis: 0 }} className="flex-grow-1 text-start m-0">
             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" className="bi bi-film" viewBox="0 0 16 16">
               <path d="M0 1a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V1zm4 0v6h8V1H4zm8 8H4v6h8V9zM1 1v2h2V1H1zm2 3H1v2h2V4zM1 7v2h2V7H1zm2 3H1v2h2v-2zm-2 3v2h2v-2H1zM15 1h-2v2h2V1zm-2 3v2h2V4h-2zm2 3h-2v2h2V7zm-2 3v2h2v-2h-2zm2 3h-2v2h2v-2z"/>
             </svg>
@@ -399,8 +400,8 @@ function App() {
           </Navbar.Brand>
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav style={{ flexBasis: 0 }} className="me-auto flex-grow-1 justify-content-center">
-              <Nav.Link href="#home">Programm</Nav.Link>
-              <Nav.Link href="">Admin</Nav.Link>
+              <Nav.Link href="/">Programm</Nav.Link>
+              {/* <Nav.Link href="">Admin</Nav.Link> */}
             </Nav>
           </Navbar.Collapse>
         </Container>
@@ -433,7 +434,7 @@ function App() {
         chosenMovie ? (
           <>
             <Container ref={movieDetails} style={{marginBottom: '5rem', scrollMarginTop: 59}}>
-            <iframe width="100%" height="500" src="https://www.youtube.com/embed/JfVOs4VSpmA" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+            <iframe width="100%" height="500" src={chosenMovieDetails.trailer} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
             </Container>
 
             <Container style={{paddingLeft: '10rem', paddingRight: '10rem', marginBottom: '7rem'}}>
@@ -845,26 +846,7 @@ function App() {
           </Container>
         ) : null
       }
-
-      <Row className='mx-0 px-5 justify-content-center text-center mt-5'>
-        <Col>
-          AGB
-        </Col>
-        <Col xs='auto'>
-          |
-        </Col>
-        <Col>
-          Datenschutz
-        </Col>
-        <Col xs='auto'>
-          |
-        </Col>
-        <Col>
-          Impressum
-        </Col>
-      </Row>
-
-
+    
     </div>
   );
 }

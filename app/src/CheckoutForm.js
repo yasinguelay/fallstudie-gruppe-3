@@ -1,10 +1,11 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import FloatingLabel from 'react-bootstrap/esm/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 
 
-export function CheckoutForm() {
+export function CheckoutForm(props) {
     const [validated, setValidated] = useState(false);
   
     const handleSubmit = (event) => {
@@ -84,7 +85,7 @@ export function CheckoutButton() {
     return (
         <Form id='Checkout-Box' noValidate validated={validated} onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
-                <Form.Check required label="Ich stimme den AGB und der Datenschutzerklärung zu." feedback="Sie müssen zustimmen, um zu buchen." feedbackType="invalid" />
+                <Form.Check required label={<>Ich stimme den <Link to='/agb' target='_blank' rel='noopener noreferrer'>AGB</Link> und der <Link to='/datenschutzerklaerung' target='_blank' rel='noopener noreferrer'>Datenschutzerklärung</Link> zu.</>} feedback="Sie müssen zustimmen, um zu buchen." feedbackType="invalid" />
             </Form.Group>
         </Form>
     );
