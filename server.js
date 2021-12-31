@@ -12,9 +12,8 @@ const PORT = process.env.PORT || 5000;
 const app = express();
 
 app.use(cors());
-app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static('app/build'));
 app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 app.use(require('./routes/filme'));
 app.use(require('./routes/saele'));

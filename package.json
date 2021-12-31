@@ -9,7 +9,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint .",
     "format": "prettier --single-quote --check .",
-    "prepare": "husky install .husky"
+    "prepare": "husky install .husky",
+    "postinstall": "cd app && npm install && npm run build"
   },
   "dependencies": {
     "cors": "^2.8.5",
