@@ -16,6 +16,7 @@ import Row from 'react-bootstrap/Row';
 import Slider from 'react-slick';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
+import SeatsModal from './SeatsModal.js';
 
 function App() {
   const [fetchResult, setFetchResult] = useState([]);
@@ -38,6 +39,8 @@ function App() {
   const [pk1ChildAmount, setPk1ChildAmount] = useState(0);
   const [pk2AdultAmount, setPk2AdultAmount] = useState(0);
   const [pk2ChildAmount, setPk2ChildAmount] = useState(0);
+
+  const [seatsModalShow, setSeatsModalShow] = useState(false);
 
   const movieDetails = useRef(null);
   const showDetails = useRef(null);
@@ -65,7 +68,7 @@ function App() {
 
     setSeatsSelected(false);
     
-    const allShowsForChosenMovie = fetchResult.find(m => m.titel === e.currentTarget.id).vorstellungen.map(s => s.startzeit).sort();
+    const allShowsForChosenMovie = fetchResult.find(m => m.titel === e.currentTarget.id).vorstellungen.map(s => s.startzeit).filter(s => new Date(s) > new Date()).sort();
 
     const showsForEachDay = [[]];
 
@@ -159,7 +162,7 @@ function App() {
         return arrayToReturn;
       }));
 
-      const seatToAppend = {titel: chosenMovie, saal: chosenHall, startzeit: chosenShow, reihe: e.currentTarget.id[0], nummer: parseInt(e.currentTarget.id.slice(1))};
+      const seatToAppend = {titel: chosenMovie, saal: chosenHall, startzeit: chosenShow, reihe: e.currentTarget.id[0], nummer: parseInt(e.currentTarget.id.slice(1)), wert: true};
       
       setChosenSeatsToBook([...chosenSeatsToBook, seatToAppend]);
       setPk1SelectableSeats(pk1SelectableSeats - 1);
@@ -179,7 +182,7 @@ function App() {
         return arrayToReturn;
       }));
 
-      const seatToAppend = {titel: chosenMovie, saal: chosenHall, startzeit: chosenShow, reihe: e.currentTarget.id[0], nummer: parseInt(e.currentTarget.id.slice(1))};
+      const seatToAppend = {titel: chosenMovie, saal: chosenHall, startzeit: chosenShow, reihe: e.currentTarget.id[0], nummer: parseInt(e.currentTarget.id.slice(1)), wert: true};
       
       setChosenSeatsToBook([...chosenSeatsToBook, seatToAppend]);
       setPk2SelectableSeats(pk2SelectableSeats - 1);
@@ -286,7 +289,20 @@ function App() {
 
   const handleNextClick = (e) => {
     if ((pk1AdultAmount || pk1ChildAmount || pk2AdultAmount || pk2ChildAmount) && !pk1SelectableSeats && !pk2SelectableSeats) {
-      setSeatsSelected(true);
+      fetch('https://fallstudie-gruppe-3.herokuapp.com/sitzplaetze/reservieren', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(chosenSeatsToBook)
+      })
+        .then((result) => {
+          if (!result.ok) {
+            setSeatsModalShow(true);
+          }
+          
+          setSeatsSelected(true);
+        });
     }
   }
 
@@ -294,6 +310,10 @@ function App() {
     document.getElementById('Checkout').requestSubmit();
     document.getElementById('Checkout-Box').requestSubmit();
   }
+
+  const handleSeatsModalHide = (e) => {
+    window.location.reload();
+  };
 
   useEffect(() => {
     fetch('https://fallstudie-gruppe-3.herokuapp.com/filme')
@@ -450,7 +470,7 @@ function App() {
                 <Col>
                   <h3 style={{fontWeight: 'bold', marginBottom: '1rem', marginLeft: '1.5rem'}}>Vorstellungen</h3>
                   <Container fluid style={{backgroundColor: '#000B22'}}>
-                    {chosenMovieShows.map((e, i) => (
+                    {chosenMovieShows[0].length !== 0 ? chosenMovieShows.map((e, i) => (
                       <Row key={e[0]} style={{paddingTop: '1rem', paddingBottom: '1rem'}} className='align-items-center'>
                         <Col xs={3} style={{textAlign: 'left'}}>
                         {new Date(e[0]).toLocaleString('de-DE', {weekday: 'short'}).toUpperCase()}
@@ -467,7 +487,13 @@ function App() {
                           </Row>
                         </Col>
                       </Row>
-                    ))} 
+                    )) : (
+                      <Row style={{height: '5rem'}} className='align-items-center'>
+                        <Col>
+                          Aktuell keine Vorstellung
+                        </Col>
+                      </Row>
+                    )} 
                   </Container>
                 </Col>
               </Row>
@@ -770,6 +796,7 @@ function App() {
               <Row className='mt-5 justify-content-end pe-0'>
                 <Col xs='auto pe-0'>
                   <Button variant="warning" onClick={handleNextClick}>Weiter</Button>
+                  <SeatsModal show={seatsModalShow} onHide={handleSeatsModalHide} />
                 </Col>
               </Row>
             </Row>
