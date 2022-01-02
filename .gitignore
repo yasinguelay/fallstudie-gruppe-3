@@ -1,6 +1,6 @@
 # npm Dependencies
 node_modules
-config.env
+*.env
 
 # Documentation
 doc/

@@ -5,6 +5,7 @@ import reportWebVitals from './reportWebVitals';
 
 import App from './App';
 import Agb from './Agb';
+import Auth0ProviderWithHistory from './auth/auth0-provider-with-history';
 import Datenschutzerklaerung from './Datenschutzerklaerung';
 import Impressum from './Impressum';
 
@@ -16,12 +17,14 @@ import './index.css';
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <Routes>
-          <Route index element={<App />} />
-          <Route path="/agb" element={<Agb />} />
-          <Route path="/datenschutzerklaerung" element={<Datenschutzerklaerung />} />
-          <Route path="/impressum" element={<Impressum />} />
-      </Routes>
+      <Auth0ProviderWithHistory>
+        <Routes>
+            <Route index element={<App />} />
+            <Route path="/agb" element={<Agb />} />
+            <Route path="/datenschutzerklaerung" element={<Datenschutzerklaerung />} />
+            <Route path="/impressum" element={<Impressum />} />
+        </Routes>
+      </Auth0ProviderWithHistory>
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
