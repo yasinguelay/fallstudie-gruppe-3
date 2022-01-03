@@ -59,6 +59,12 @@ movies
 
     newMovieToInsert.bild = resultsImdbTitle.image;
     newMovieToInsert.dauer = parseInt(resultsImdbTitle.runtimeMins);
+    newMovieToInsert.beschreibung =
+      resultsImdbTitle.plotLocal ===
+      'Momentan gibt es keine deutsche Übersetzung. Unterstütze uns indem du eine hinzufügst.'
+        ? resultsImdbTitle.plot
+        : resultsImdbTitle.plotLocal;
+    newMovieToInsert.trailer = '';
 
     dbConnect
       .collection('film')
