@@ -3,6 +3,7 @@ require('dotenv').config({ path: './config.env' });
 
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 // get MongoDB driver connection
 const dbo = require('./db/conn');
 const swaggerUi = require('swagger-ui-express');
@@ -13,12 +14,15 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static('app/build'));
+app.use(express.static(path.join(__dirname, 'app/build')));
 app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 app.use(require('./routes/filme'));
 app.use(require('./routes/saele'));
 app.use(require('./routes/vorstellungen'));
 app.use(require('./routes/sitzplaetze'));
+app.get('/*', function (req, res) {
+  res.sendFile(path.join(__dirname, 'app/build', 'index.html'));
+});
 
 // Global error handling
 app.use(function (err, _req, res, _next) {

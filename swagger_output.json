@@ -210,6 +210,30 @@
         }
       }
     },
+    "/sitzplaetze/freigeben": {
+      "put": {
+        "tags": [
+          "Sitzplatz"
+        ],
+        "description": "Sitzplatz freigeben.",
+        "parameters": [
+          {
+            "name": "seats",
+            "in": "body",
+            "description": "Zu freigebende Sitze.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SitzeFreigeben"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/vorstellungen": {
       "post": {
         "tags": [
@@ -567,6 +591,46 @@
           "wert": {
             "type": "string",
             "example": "auth0|userId"
+          }
+        },
+        "required": [
+          "titel",
+          "saal",
+          "startzeit",
+          "reihe",
+          "nummer",
+          "wert"
+        ]
+      }
+    },
+    "SitzeFreigeben": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "titel": {
+            "type": "string",
+            "example": "Spider-Man: No Way Home"
+          },
+          "saal": {
+            "type": "number",
+            "example": 1
+          },
+          "startzeit": {
+            "type": "string",
+            "example": "2022-01-05T12:30"
+          },
+          "reihe": {
+            "type": "string",
+            "example": "A"
+          },
+          "nummer": {
+            "type": "number",
+            "example": 15
+          },
+          "wert": {
+            "type": "string",
+            "example": "rauth0|userId"
           }
         },
         "required": [
