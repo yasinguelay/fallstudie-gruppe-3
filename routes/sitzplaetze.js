@@ -199,7 +199,7 @@ seats.route('/sitzplaetze/checkout').put(async function (req, res) {
 
     // send mail with defined transport object
     let info = await transporter.sendMail({
-      // from: '"Fred Foo 👻" <foo@example.com>', // sender address
+      from: '"Fallstudie Gruppe 3" <fallstudie.gruppe.3@gmail.com>', // sender address
       to: req.body[3], // list of receivers
       subject: 'Buchungsbestätigung', // Subject line
       text:
