@@ -310,6 +310,8 @@ function App() {
             }
             
             setSeatsSelected(true);
+          }, (error) => {
+            setFetchResult('Init Fetch Failed!');
           });
       } else {
         setSeatsModalShow(true);
@@ -378,6 +380,8 @@ function App() {
     .then(res => res.json())
     .then((result) => {
       setFetchResult(result);
+    }, (error) => {
+      setFetchResult('Init Fetch Failed!');
     });
   }, []);
 
@@ -456,6 +460,16 @@ function App() {
   
   if (isLoading) {
     return <Loading />;
+  }
+
+  if (fetchResult === 'Init Fetch Failed!') {
+    return (
+      <Row style={{minHeight: '95vh'}} className="justify-content-center align-items-center">
+          <Col xs='auto'>
+              Bitte versuchen Sie es später erneut
+          </Col>
+      </Row>
+    );
   }
 
   return (
@@ -900,7 +914,7 @@ function App() {
                     <Row>
                       <Col>
                         <div className='fw-bold mb-3'>Ihre Daten:</div>
-                        <CheckoutForm chosenSeatsToBook = {chosenSeatsToBook} onHide={handleBookingModalHide} totalAmount={(pk1ChildAmount * pk1ChildPrice + pk2ChildAmount * pk2ChildPrice + pk1AdultAmount * pk1AdultPrice + pk2AdultAmount * pk2AdultPrice)} checkBoxToggled={checkBoxToggled} />
+                        <CheckoutForm chosenSeatsToBook = {chosenSeatsToBook} onHide={handleBookingModalHide} totalAmount={(pk1ChildAmount * pk1ChildPrice + pk2ChildAmount * pk2ChildPrice + pk1AdultAmount * pk1AdultPrice + pk2AdultAmount * pk2AdultPrice)} checkBoxToggled={checkBoxToggled} setFetchResult={setFetchResult} />
                       </Col>
                       <Col xs={6} className='ps-5'>
                         <Row className='mb-2'>

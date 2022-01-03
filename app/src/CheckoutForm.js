@@ -42,6 +42,8 @@ export function CheckoutForm(props) {
                 
                 setBookingSucceeded(true);
                 setBookingModalShow(true);
+              }, (error) => {
+                  props.setFetchResult('Init Fetch Failed!');
               });
       }
     };
