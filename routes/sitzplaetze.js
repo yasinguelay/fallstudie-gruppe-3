@@ -268,14 +268,14 @@ seats.route('/sitzplaetze/checkout').put(async function (req, res) {
 
 seats.route('/sitzplaetze/freigeben').put(async function (req, res) {
   // #swagger.tags = ['Sitzplatz']
-  // #swagger.description = 'Sitzplatz freigebn.'
+  // #swagger.description = 'Sitzplatz freigeben.'
 
   /* #swagger.parameters['seats'] = {
                in: 'body',
                description: 'Zu freigebende Sitze.',
                required: true,
                type: 'object',
-               schema: { $ref: "#/definitions/SitzeReservieren" }
+               schema: { $ref: "#/definitions/SitzeFreigeben" }
         } */
 
   const dbConnect = dbo.getDb();
