@@ -62,6 +62,7 @@ function App() {
   const { logout } = useAuth0();
   const { isLoading } = useAuth0();
   const { isAuthenticated } = useAuth0();
+  const { user } = useAuth0();
 
   const handleMovieChosen = (e) => {
     setChosenMovie(e.currentTarget.id);
@@ -138,7 +139,7 @@ function App() {
         return arrayToReturn;
       }));
 
-      const seatToDelete = {titel: chosenMovie, saal: chosenHall, startzeit: chosenShow, reihe: e.currentTarget.id[0], nummer: parseInt(e.currentTarget.id.slice(1))};
+      const seatToDelete = {titel: chosenMovie, saal: chosenHall, startzeit: chosenShow, reihe: e.currentTarget.id[0], nummer: parseInt(e.currentTarget.id.slice(1)), wert: 'r' + user.sub};
       
       const removedSeatArray = chosenSeatsToBook.filter((e) => JSON.stringify(e) !== JSON.stringify(seatToDelete))
 
@@ -168,7 +169,7 @@ function App() {
         return arrayToReturn;
       }));
 
-      const seatToAppend = {titel: chosenMovie, saal: chosenHall, startzeit: chosenShow, reihe: e.currentTarget.id[0], nummer: parseInt(e.currentTarget.id.slice(1)), wert: true};
+      const seatToAppend = {titel: chosenMovie, saal: chosenHall, startzeit: chosenShow, reihe: e.currentTarget.id[0], nummer: parseInt(e.currentTarget.id.slice(1)), wert: 'r' + user.sub};
       
       setChosenSeatsToBook([...chosenSeatsToBook, seatToAppend]);
       setPk1SelectableSeats(pk1SelectableSeats - 1);
@@ -188,7 +189,7 @@ function App() {
         return arrayToReturn;
       }));
 
-      const seatToAppend = {titel: chosenMovie, saal: chosenHall, startzeit: chosenShow, reihe: e.currentTarget.id[0], nummer: parseInt(e.currentTarget.id.slice(1)), wert: true};
+      const seatToAppend = {titel: chosenMovie, saal: chosenHall, startzeit: chosenShow, reihe: e.currentTarget.id[0], nummer: parseInt(e.currentTarget.id.slice(1)), wert: 'r' + user.sub};
       
       setChosenSeatsToBook([...chosenSeatsToBook, seatToAppend]);
       setPk2SelectableSeats(pk2SelectableSeats - 1);
@@ -295,31 +296,83 @@ function App() {
 
   const handleNextClick = (e) => {
     if ((pk1AdultAmount || pk1ChildAmount || pk2AdultAmount || pk2ChildAmount) && !pk1SelectableSeats && !pk2SelectableSeats) {
-      fetch('https://fallstudie-gruppe-3.herokuapp.com/sitzplaetze/reservieren', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(chosenSeatsToBook)
-      })
-        .then((result) => {
-          if (!result.ok) {
-            setSeatsModalShow(true);
-          }
-          
-          setSeatsSelected(true);
-        });
+      if(isAuthenticated) {
+        fetch('https://fallstudie-gruppe-3.herokuapp.com/sitzplaetze/reservieren', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(chosenSeatsToBook)
+        })
+          .then((result) => {
+            if (!result.ok) {
+              setSeatsModalShow(true);
+              return;
+            }
+            
+            setSeatsSelected(true);
+          });
+      } else {
+        setSeatsModalShow(true);
+      }
     }
-  }
+  };
 
   const handleFormSubmit = (e) => {
     document.getElementById('Checkout').requestSubmit();
     document.getElementById('Checkout-Box').requestSubmit();
   }
 
-  const handleSeatsModalHide = (e) => {
-    window.location.reload();
-  };
+  const handleSeatsModalHide = [
+    (e) => {
+      window.location.reload();
+    }, (e) => {
+      loginWithRedirect();
+    }
+  ];
+
+  const handleBookingModalHide = [
+    (e) => {
+        window.location.reload();
+    }, (e) => {
+      showDetails.current.scrollIntoView();
+
+      const seatsForChosenShow = [[]];
+      let pk1FreeSeatsTotal = 0;
+      let pk2FreeSeatsTotal = 0;
+
+      for (const seat of chosenMovieDetails.vorstellungen.find(e => e.startzeit === chosenShow).sitzplaetze) {
+        for (const row of seatsForChosenShow) {
+          const indexOfDayArray = seatsForChosenShow.indexOf(row);
+          
+          if (row.length === 0 || seat.reihe === row[0].reihe) {
+            row.push({...seat});
+          } else if (indexOfDayArray === seatsForChosenShow.length - 1) {
+            seatsForChosenShow.push([{...seat}]);
+            break;
+          }
+        }
+
+        if (seat.reserviert === false && seat.reihe <= 'G') {
+          pk1FreeSeatsTotal++;
+        } else if (seat.reserviert === false && seat.reihe > 'G') {
+          pk2FreeSeatsTotal++;
+        }
+      }
+
+      setChosenShowSeats(seatsForChosenShow);
+      setChosenHall(chosenMovieDetails.vorstellungen.find(e => e.startzeit === chosenShow).saal);
+      setPk1FreeSeatsTotal(pk1FreeSeatsTotal);
+      setPk2FreeSeatsTotal(pk2FreeSeatsTotal);
+      setPk1SelectableSeats(0);
+      setPk2SelectableSeats(0);
+      setPk1AdultAmount(0);
+      setPk1ChildAmount(0);
+      setPk2AdultAmount(0);
+      setPk2ChildAmount(0);
+      setChosenSeatsToBook([]);
+    }
+];
 
   useEffect(() => {
     fetch('https://fallstudie-gruppe-3.herokuapp.com/filme')
@@ -751,7 +804,7 @@ function App() {
                           {
                             e.map(s => (
                               <Col key={`seat-${s.reihe}-${s.nummer}`} className='mx-1 p-0' style={(pk1Selected && s.reihe <= 'G' && !s.reserviert) || (!pk1Selected && s.reihe > 'G' && !s.reserviert) ? {color: '#DC3646'} : {}}>
-                                {s.reserviert === true ? (
+                                {s.reserviert !== false && s.reserviert !== 'userSelect' ? (
                                   <OverlayTrigger placement="top" overlay=
                                     {
                                       <Popover id={`popover-positioned-top`}>
@@ -836,7 +889,7 @@ function App() {
                     <Row>
                       <Col>
                         <div className='fw-bold mb-3'>Ihre Daten:</div>
-                        <CheckoutForm />
+                        <CheckoutForm chosenSeatsToBook = {chosenSeatsToBook} onHide={handleBookingModalHide} totalAmount={(pk1ChildAmount * pk1ChildPrice + pk2ChildAmount * pk2ChildPrice + pk1AdultAmount * pk1AdultPrice + pk2AdultAmount * pk2AdultPrice)} />
                       </Col>
                       <Col xs={6} className='ps-5'>
                         <Row className='mb-2'>

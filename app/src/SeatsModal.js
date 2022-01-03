@@ -1,9 +1,13 @@
+import { useAuth0 } from '@auth0/auth0-react';
+
 import Button from 'react-bootstrap/esm/Button';
 import Modal from 'react-bootstrap/Modal';
 
 
 export default function SeatsModal(props) {
-    return (
+    const { isAuthenticated } = useAuth0();
+    
+    return isAuthenticated ? (
         <Modal
         {...props}
         size="lg"
@@ -25,7 +29,30 @@ export default function SeatsModal(props) {
                 </p>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant='warning' onClick={props.onHide}>Schließen</Button>
+                <Button variant='warning' onClick={props.onHide[0]}>Schließen</Button>
+            </Modal.Footer>
+        </Modal>
+    ) : (
+        <Modal
+        {...props}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+        className='text-dark'
+        >
+            <Modal.Header closeButton>
+            <Modal.Title id="contained-modal-title-vcenter">
+                Bitte loggen Sie sich ein
+            </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <h4>Login benötigt</h4>
+                <p>
+                    Loggen Sie sich bitte ein, um fortzufahren.
+                </p>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant='warning' onClick={props.onHide[1]}>Login</Button>
             </Modal.Footer>
         </Modal>
     );

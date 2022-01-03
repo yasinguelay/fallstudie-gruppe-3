@@ -1,24 +1,53 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth0 } from '@auth0/auth0-react';
+import { useState } from 'react';
 
+import Button from 'react-bootstrap/esm/Button';
 import FloatingLabel from 'react-bootstrap/esm/FloatingLabel';
 import Form from 'react-bootstrap/Form';
+import Modal from 'react-bootstrap/Modal';
 
 
 export function CheckoutForm(props) {
     const [validated, setValidated] = useState(false);
-  
+    const [bookingModalShow, setBookingModalShow] = useState(false);
+    const [bookingSucceeded, setBookingSucceeded] = useState(false);
+
+    const { user } = useAuth0();
+
     const handleSubmit = (event) => {
       const form = event.currentTarget;
+      event.preventDefault();
+      event.stopPropagation();
+      
       if (form.checkValidity() === false) {
-        event.preventDefault();
-        event.stopPropagation();
+        setValidated(true);
+        return;
       }
-  
+      
       setValidated(true);
+
+      fetch('https://fallstudie-gruppe-3.herokuapp.com/sitzplaetze/checkout', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify([props.chosenSeatsToBook, props.totalAmount, document.getElementById('Vorname').value, document.getElementById('E-Mail').value])
+        })
+          .then((result) => {
+            if (!result.ok) {
+              setBookingModalShow(true);
+            }
+            
+            setBookingSucceeded(true);
+            setBookingModalShow(true);
+          });
     };
+
   
+
     return (
+        <>
          <Form id='Checkout' noValidate validated={validated} onSubmit={handleSubmit}>
             <FloatingLabel controlId="Anrede" label="Anrede" className="mb-3 text-dark">
                 <Form.Select defaultValue='' required aria-label="Anrede">
@@ -38,7 +67,7 @@ export function CheckoutForm(props) {
                 <Form.Control.Feedback type='invalid'>Bitte angeben.</Form.Control.Feedback>
             </FloatingLabel>
             <FloatingLabel controlId="E-Mail" label="E-Mail" className="mb-3 text-dark">
-                <Form.Control required type="email" placeholder="E-Mail" />
+                <Form.Control required type="email" placeholder="E-Mail" defaultValue={user.email} />
                 <Form.Control.Feedback type='invalid'>Bitte angeben.</Form.Control.Feedback>
             </FloatingLabel>
             <FloatingLabel controlId="Anschrift-Strasse" label="Straße Nr." className="mb-3 text-dark">
@@ -64,6 +93,62 @@ export function CheckoutForm(props) {
                 <Form.Control.Feedback type='invalid'>Bitte auswählen.</Form.Control.Feedback>
             </FloatingLabel>
       </Form>
+      {
+        bookingSucceeded ? (
+            <Modal
+            show={bookingModalShow}
+            onHide={props.onHide[0]}
+            size="lg"
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
+            className='text-dark'
+            >
+                <Modal.Header closeButton>
+                <Modal.Title id="contained-modal-title-vcenter">
+                    Vielen Dank für Ihre Reservierung
+                </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <h4>Buchung erfolgreich</h4>
+                    <p>
+                        Ihre Buchung war erfolgreich.
+                        <br />
+                        Sie erhalten Ihre Tickets in Kürze per E-Mail.
+                    </p>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant='warning' onClick={props.onHide[0]}>Schließen</Button>
+                </Modal.Footer>
+            </Modal>
+        ) : (
+            <Modal
+            show={bookingModalShow}
+            onHide={props.onHide[1]}
+            size="lg"
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
+            className='text-dark'
+            >
+                <Modal.Header closeButton>
+                <Modal.Title id="contained-modal-title-vcenter">
+                    Bitte starten Sie erneut
+                </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <h4>Sitzplatz belegt</h4>
+                    <p>
+                        Einer oder mehrere der von Ihnen ausgewählten Sitzplätze wurden in der Zwischenzeit belegt.
+                        <br />
+                        Bitte starten Sie erneut.
+                    </p>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant='warning' onClick={props.onHide[1]}>Login</Button>
+                </Modal.Footer>
+            </Modal>
+        )
+      }
+      </>
     );
 }
 
