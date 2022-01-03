@@ -10,9 +10,9 @@ const doc = {
     description:
       'API Dokumentation zur Anbindung von Frontends für das Kinoticketreservierungssystem.',
   },
-  host: 'api-demo-gruppe-3.herokuapp.com',
+  host: 'fallstudie-gruppe-3.herokuapp.com',
   basePath: '/',
-  schemes: ['http', 'https'],
+  schemes: ['https', 'http'],
   consumes: ['application/json'],
   produces: ['application/json'],
   tags: [
@@ -30,6 +30,11 @@ const doc = {
       name: 'Saal',
       description:
         "Folgende Endpoints können genutzt werden, um mit der Ressource 'Saal' zu interagieren.",
+    },
+    {
+      name: 'Sitzplatz',
+      description:
+        "Folgende Endpoints können genutzt werden, um mit der Ressource 'Sitzplatz' zu interagieren.",
     },
   ],
   /* securityDefinitions: {
@@ -53,6 +58,9 @@ const doc = {
       titel: 'Inception',
       bild: 'https://imdb-api.com/images/original/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_Ratio0.6762_AL_.jpg',
       dauer: 148,
+      beschreibung:
+        'Beim Versuch in das Unterbewusstsein des Industriellen Saito einzudringen, stoßen Cobb und seine Mitstreiter auf unerwartete Schwierigkeiten. Saito hatte Verteidigungsstrategien gegen den Gedankendiebstahl trainiert und baut nun einen Abwehrriegel auf, doch erst der Verrat eines Kollegen lässt den Versuch scheitern, dem Schlafenden Geheimnisse zu entlocken. Da seine Auftraggeber unbedingten Erfolg gefordert hatten, muss Cobb, der auf Grund einer drohenden Verurteilung nicht mehr in die USA zurück kann, fliehen, doch Saito kommt ihm zuvor. Allerdings nicht um ihn zu bestrafen, sondern um ihm einen Deal vorzuschlagen.',
+      trailer: 'https://www.youtube.com/embed/dHTyZ9Bmp0c',
       vorstellungen: [
         {
           saal: 1,
@@ -101,6 +109,26 @@ const doc = {
     VorstellungLöschen: {
       $film: 'Inception',
     },
+    SitzeReservieren: [
+      {
+        $titel: 'Spider-Man: No Way Home',
+        $saal: 1,
+        $startzeit: '2022-01-05T12:30',
+        $reihe: 'A',
+        $nummer: 15,
+        $wert: 'rauth0|userId',
+      },
+    ],
+    SitzeBuchen: [
+      {
+        $titel: 'Spider-Man: No Way Home',
+        $saal: 1,
+        $startzeit: '2022-01-05T12:30',
+        $reihe: 'A',
+        $nummer: 15,
+        $wert: 'auth0|userId',
+      },
+    ],
   },
 };
 

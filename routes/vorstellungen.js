@@ -4,7 +4,7 @@ const shows = express.Router();
 
 shows
   .route('/vorstellungen')
-  .get(function (req, res) {
+  .put(function (req, res) {
     // #swagger.tags = ['Vorstellung']
     // #swagger.description = 'Vorstellungen für einen Tag abrufen.'
     /* #swagger.parameters['getShows'] = {
@@ -149,7 +149,7 @@ shows
             res.status(400).send('Fehler beim Anlegen der Vorstellung!');
           } else {
             console.log(`Vorstellung wurde angelegt.`);
-            res.status(204).send();
+            res.status(201).send();
           }
         });
     } else {
@@ -178,7 +178,7 @@ shows
                 res.status(400).send('Fehler beim Anlegen der Vorstellung!');
               } else {
                 console.log(`Vorstellung wurde angelegt.`);
-                res.status(204).send();
+                res.status(201).send();
               }
             });
 
@@ -200,6 +200,11 @@ shows.route('/vorstellungen/:saal/:startzeit').delete(function (req, res) {
                type: 'object',
                schema: { $ref: "#/definitions/VorstellungLöschen" }
         } */
+
+  /* #swagger.parameters['startzeit'] = { 
+               description: 'Format: 2021-12-19T00:00'
+        } */
+
   const dbConnect = dbo.getDb();
   const showToDelete = { titel: req.body.film };
   const showToDeleteQuery = {

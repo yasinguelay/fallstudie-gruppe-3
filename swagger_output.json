@@ -5,7 +5,7 @@
     "title": "Fallstudie-Gruppe-3",
     "description": "API Dokumentation zur Anbindung von Frontends für das Kinoticketreservierungssystem."
   },
-  "host": "api-demo-gruppe-3.herokuapp.com",
+  "host": "fallstudie-gruppe-3.herokuapp.com",
   "basePath": "/",
   "tags": [
     {
@@ -19,11 +19,15 @@
     {
       "name": "Saal",
       "description": "Folgende Endpoints können genutzt werden, um mit der Ressource 'Saal' zu interagieren."
+    },
+    {
+      "name": "Sitzplatz",
+      "description": "Folgende Endpoints können genutzt werden, um mit der Ressource 'Sitzplatz' zu interagieren."
     }
   ],
   "schemes": [
-    "http",
-    "https"
+    "https",
+    "http"
   ],
   "consumes": [
     "application/json"
@@ -118,7 +122,14 @@
             }
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
       }
     },
     "/saele/{nummer}": {
@@ -147,19 +158,18 @@
     },
     "/sitzplaetze/reservieren": {
       "put": {
-        "tags": [],
-        "description": "",
+        "tags": [
+          "Sitzplatz"
+        ],
+        "description": "Sitzplatz reservieren.",
         "parameters": [
           {
-            "name": "obj",
+            "name": "seats",
             "in": "body",
+            "description": "Zu reservierende Sitze.",
+            "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "entries": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/definitions/SitzeReservieren"
             }
           }
         ],
@@ -175,9 +185,21 @@
     },
     "/sitzplaetze/checkout": {
       "put": {
-        "tags": [],
-        "description": "",
-        "parameters": [],
+        "tags": [
+          "Sitzplatz"
+        ],
+        "description": "Sitzplatz buchen.",
+        "parameters": [
+          {
+            "name": "seats",
+            "in": "body",
+            "description": "Zu buchende Sitze.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SitzeBuchen"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -189,7 +211,32 @@
       }
     },
     "/vorstellungen": {
-      "get": {
+      "post": {
+        "tags": [
+          "Vorstellung"
+        ],
+        "description": "Vorstellung anlegen.",
+        "parameters": [
+          {
+            "name": "createShow",
+            "in": "body",
+            "description": "Anzulegender Film.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/VorstellungAnlegen"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "put": {
         "tags": [
           "Vorstellung"
         ],
@@ -216,31 +263,6 @@
             "description": "Bad Request"
           }
         }
-      },
-      "post": {
-        "tags": [
-          "Vorstellung"
-        ],
-        "description": "Vorstellung anlegen.",
-        "parameters": [
-          {
-            "name": "createShow",
-            "in": "body",
-            "description": "Anzulegender Film.",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/VorstellungAnlegen"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
-          },
-          "400": {
-            "description": "Bad Request"
-          }
-        }
       }
     },
     "/vorstellungen/{saal}/{startzeit}": {
@@ -260,7 +282,8 @@
             "name": "startzeit",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "Format: 2021-12-19T00:00"
           },
           {
             "name": "deleteShow",
@@ -298,6 +321,14 @@
         "dauer": {
           "type": "number",
           "example": 148
+        },
+        "beschreibung": {
+          "type": "string",
+          "example": "Beim Versuch in das Unterbewusstsein des Industriellen Saito einzudringen, stoßen Cobb und seine Mitstreiter auf unerwartete Schwierigkeiten. Saito hatte Verteidigungsstrategien gegen den Gedankendiebstahl trainiert und baut nun einen Abwehrriegel auf, doch erst der Verrat eines Kollegen lässt den Versuch scheitern, dem Schlafenden Geheimnisse zu entlocken. Da seine Auftraggeber unbedingten Erfolg gefordert hatten, muss Cobb, der auf Grund einer drohenden Verurteilung nicht mehr in die USA zurück kann, fliehen, doch Saito kommt ihm zuvor. Allerdings nicht um ihn zu bestrafen, sondern um ihm einen Deal vorzuschlagen."
+        },
+        "trailer": {
+          "type": "string",
+          "example": "https://www.youtube.com/embed/dHTyZ9Bmp0c"
         },
         "vorstellungen": {
           "type": "array",
@@ -467,6 +498,86 @@
       "required": [
         "film"
       ]
+    },
+    "SitzeReservieren": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "titel": {
+            "type": "string",
+            "example": "Spider-Man: No Way Home"
+          },
+          "saal": {
+            "type": "number",
+            "example": 1
+          },
+          "startzeit": {
+            "type": "string",
+            "example": "2022-01-05T12:30"
+          },
+          "reihe": {
+            "type": "string",
+            "example": "A"
+          },
+          "nummer": {
+            "type": "number",
+            "example": 15
+          },
+          "wert": {
+            "type": "string",
+            "example": "rauth0|userId"
+          }
+        },
+        "required": [
+          "titel",
+          "saal",
+          "startzeit",
+          "reihe",
+          "nummer",
+          "wert"
+        ]
+      }
+    },
+    "SitzeBuchen": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "titel": {
+            "type": "string",
+            "example": "Spider-Man: No Way Home"
+          },
+          "saal": {
+            "type": "number",
+            "example": 1
+          },
+          "startzeit": {
+            "type": "string",
+            "example": "2022-01-05T12:30"
+          },
+          "reihe": {
+            "type": "string",
+            "example": "A"
+          },
+          "nummer": {
+            "type": "number",
+            "example": 15
+          },
+          "wert": {
+            "type": "string",
+            "example": "auth0|userId"
+          }
+        },
+        "required": [
+          "titel",
+          "saal",
+          "startzeit",
+          "reihe",
+          "nummer",
+          "wert"
+        ]
+      }
     }
   }
 }

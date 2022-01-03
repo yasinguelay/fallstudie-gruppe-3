@@ -14,6 +14,9 @@ halls.route('/saele').post(function (req, res) {
                schema: { $ref: "#/definitions/SaalAnlegen" }
         } */
 
+  /* #swagger.responses[201] */
+  /* #swagger.responses[400] */
+
   const dbConnect = dbo.getDb();
   const newHallToInsert = {
     nummer: req.body.nummer,

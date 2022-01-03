@@ -4,6 +4,17 @@ const dbo = require('../db/conn');
 const seats = express.Router();
 
 seats.route('/sitzplaetze/reservieren').put(async function (req, res) {
+  // #swagger.tags = ['Sitzplatz']
+  // #swagger.description = 'Sitzplatz reservieren.'
+
+  /* #swagger.parameters['seats'] = {
+               in: 'body',
+               description: 'Zu reservierende Sitze.',
+               required: true,
+               type: 'object',
+               schema: { $ref: "#/definitions/SitzeReservieren" }
+        } */
+
   const dbConnect = dbo.getDb();
 
   const undoAfterBlockTime = function () {
@@ -117,6 +128,17 @@ seats.route('/sitzplaetze/reservieren').put(async function (req, res) {
 });
 
 seats.route('/sitzplaetze/checkout').put(async function (req, res) {
+  // #swagger.tags = ['Sitzplatz']
+  // #swagger.description = 'Sitzplatz buchen.'
+
+  /* #swagger.parameters['seats'] = {
+               in: 'body',
+               description: 'Zu buchende Sitze.',
+               required: true,
+               type: 'object',
+               schema: { $ref: "#/definitions/SitzeBuchen" }
+        } */
+
   const dbConnect = dbo.getDb();
 
   for (const [index, seat] of req.body[0].entries()) {
