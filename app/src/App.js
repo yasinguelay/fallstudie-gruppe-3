@@ -21,6 +21,8 @@ import Tabs from 'react-bootstrap/Tabs';
 import SeatsModal from './SeatsModal.js';
 
 function App() {
+  const { isLoading, isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
+
   const [fetchResult, setFetchResult] = useState([]);
   const [chosenMovie, setChosenMovie] = useState('');
   const [chosenMovieElementContainer, setChosenMovieElementContainer] = useState('');
@@ -43,6 +45,7 @@ function App() {
   const [pk2ChildAmount, setPk2ChildAmount] = useState(0);
 
   const [seatsModalShow, setSeatsModalShow] = useState(false);
+  const [checkBoxToggled, setCheckBoxToggled] = useState(false);
 
   const movieDetails = useRef(null);
   const showDetails = useRef(null);
@@ -58,11 +61,6 @@ function App() {
     slidesToScroll: 4
   };
 
-  const { loginWithRedirect } = useAuth0();
-  const { logout } = useAuth0();
-  const { isLoading } = useAuth0();
-  const { isAuthenticated } = useAuth0();
-  const { user } = useAuth0();
 
   const handleMovieChosen = (e) => {
     setChosenMovie(e.currentTarget.id);
@@ -139,7 +137,7 @@ function App() {
         return arrayToReturn;
       }));
 
-      const seatToDelete = {titel: chosenMovie, saal: chosenHall, startzeit: chosenShow, reihe: e.currentTarget.id[0], nummer: parseInt(e.currentTarget.id.slice(1)), wert: 'r' + user.sub};
+      const seatToDelete = {titel: chosenMovie, saal: chosenHall, startzeit: chosenShow, reihe: e.currentTarget.id[0], nummer: parseInt(e.currentTarget.id.slice(1))};
       
       const removedSeatArray = chosenSeatsToBook.filter((e) => JSON.stringify(e) !== JSON.stringify(seatToDelete))
 
@@ -169,7 +167,7 @@ function App() {
         return arrayToReturn;
       }));
 
-      const seatToAppend = {titel: chosenMovie, saal: chosenHall, startzeit: chosenShow, reihe: e.currentTarget.id[0], nummer: parseInt(e.currentTarget.id.slice(1)), wert: 'r' + user.sub};
+      const seatToAppend = {titel: chosenMovie, saal: chosenHall, startzeit: chosenShow, reihe: e.currentTarget.id[0], nummer: parseInt(e.currentTarget.id.slice(1))};
       
       setChosenSeatsToBook([...chosenSeatsToBook, seatToAppend]);
       setPk1SelectableSeats(pk1SelectableSeats - 1);
@@ -189,7 +187,7 @@ function App() {
         return arrayToReturn;
       }));
 
-      const seatToAppend = {titel: chosenMovie, saal: chosenHall, startzeit: chosenShow, reihe: e.currentTarget.id[0], nummer: parseInt(e.currentTarget.id.slice(1)), wert: 'r' + user.sub};
+      const seatToAppend = {titel: chosenMovie, saal: chosenHall, startzeit: chosenShow, reihe: e.currentTarget.id[0], nummer: parseInt(e.currentTarget.id.slice(1))};
       
       setChosenSeatsToBook([...chosenSeatsToBook, seatToAppend]);
       setPk2SelectableSeats(pk2SelectableSeats - 1);
@@ -302,7 +300,7 @@ function App() {
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(chosenSeatsToBook)
+          body: JSON.stringify(chosenSeatsToBook.map(e => ({...e, wert: 'r' + user.sub})))
         })
           .then((result) => {
             if (!result.ok) {
@@ -889,7 +887,7 @@ function App() {
                     <Row>
                       <Col>
                         <div className='fw-bold mb-3'>Ihre Daten:</div>
-                        <CheckoutForm chosenSeatsToBook = {chosenSeatsToBook} onHide={handleBookingModalHide} totalAmount={(pk1ChildAmount * pk1ChildPrice + pk2ChildAmount * pk2ChildPrice + pk1AdultAmount * pk1AdultPrice + pk2AdultAmount * pk2AdultPrice)} />
+                        <CheckoutForm chosenSeatsToBook = {chosenSeatsToBook} onHide={handleBookingModalHide} totalAmount={(pk1ChildAmount * pk1ChildPrice + pk2ChildAmount * pk2ChildPrice + pk1AdultAmount * pk1AdultPrice + pk2AdultAmount * pk2AdultPrice)} checkBoxToggled={checkBoxToggled} />
                       </Col>
                       <Col xs={6} className='ps-5'>
                         <Row className='mb-2'>
@@ -926,7 +924,7 @@ function App() {
                         </Row>
                         <Row className='mt-5'>
                           <Col>
-                            <CheckoutButton />
+                            <CheckoutButton setCheckBoxToggled={setCheckBoxToggled} />
                           </Col>
                         </Row>
                         <Row>

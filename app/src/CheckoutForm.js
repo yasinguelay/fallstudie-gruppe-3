@@ -27,21 +27,23 @@ export function CheckoutForm(props) {
       
       setValidated(true);
 
-      fetch('https://fallstudie-gruppe-3.herokuapp.com/sitzplaetze/checkout', {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify([props.chosenSeatsToBook, props.totalAmount, document.getElementById('Vorname').value, document.getElementById('E-Mail').value])
-        })
-          .then((result) => {
-            if (!result.ok) {
-              setBookingModalShow(true);
-            }
-            
-            setBookingSucceeded(true);
-            setBookingModalShow(true);
-          });
+      if (props.checkBoxToggled) {
+          fetch('https://fallstudie-gruppe-3.herokuapp.com/sitzplaetze/checkout', {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify([props.chosenSeatsToBook.map(e => ({...e, wert: 'r' + user.sub})), props.totalAmount, document.getElementById('Vorname').value, document.getElementById('E-Mail').value])
+            })
+              .then((result) => {
+                if (!result.ok) {
+                  setBookingModalShow(true);
+                }
+                
+                setBookingSucceeded(true);
+                setBookingModalShow(true);
+              });
+      }
     };
 
   
@@ -152,25 +154,25 @@ export function CheckoutForm(props) {
     );
 }
 
-export function CheckoutButton() {
+export function CheckoutButton(props) {
     const [validated, setValidated] = useState(false);
   
     const handleSubmit = (event) => {
       const form = event.currentTarget;
-      if (form.checkValidity() === false) {
-        event.preventDefault();
-        event.stopPropagation();
-      }
-  
-      setValidated(true);
       event.preventDefault();
       event.stopPropagation();
+      
+      if (form.checkValidity() !== false) {
+        setValidated(true);
+      } 
+
+      setValidated(true);
     };
   
     return (
         <Form id='Checkout-Box' noValidate validated={validated} onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
-                <Form.Check required label={<>Ich stimme den <Link to='/agb' target='_blank' rel='noopener noreferrer'>AGB</Link> und der <Link to='/datenschutzerklaerung' target='_blank' rel='noopener noreferrer'>Datenschutzerklärung</Link> zu.</>} feedback="Sie müssen zustimmen, um zu buchen." feedbackType="invalid" />
+                <Form.Check required onChange={(e) => props.setCheckBoxToggled(e.currentTarget.checked)} label={<>Ich stimme den <Link to='/agb' target='_blank' rel='noopener noreferrer'>AGB</Link> und der <Link to='/datenschutzerklaerung' target='_blank' rel='noopener noreferrer'>Datenschutzerklärung</Link> zu.</>} feedback="Sie müssen zustimmen, um zu buchen." feedbackType="invalid" />
             </Form.Group>
         </Form>
     );
