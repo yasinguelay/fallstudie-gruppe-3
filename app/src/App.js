@@ -93,11 +93,48 @@ function App() {
     }
 
     setChosenMovieShows(showsForEachDay);
+
+    
+    if (checkoutEntered) {
+
+      setCheckoutEntered(false);
+
+      fetch('https://fallstudie-gruppe-3.herokuapp.com/sitzplaetze/freigeben', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(chosenSeatsToBook.map(e => ({...e, wert: 'r' + user.sub})))
+      })
+        .then((result) => {
+          ;
+        }, (error) => {
+          ;
+        });
+    }
   };
 
   const handleShowChosen = (e) => {
     setChosenShow(e.target.value);
     setSeatsSelected(false);
+
+    if (checkoutEntered) {
+
+      setCheckoutEntered(false);
+
+      fetch('https://fallstudie-gruppe-3.herokuapp.com/sitzplaetze/freigeben', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(chosenSeatsToBook.map(e => ({...e, wert: 'r' + user.sub})))
+      })
+        .then((result) => {
+          ;
+        }, (error) => {
+          ;
+        });
+    }
   };
 
   const handleMovieHover = (e) => {
