@@ -9,7 +9,8 @@ export default function SeatsModal(props) {
     
     return isAuthenticated ? (
         <Modal
-        {...props}
+        show={props.show}
+        onHide={props.onHide[0]}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered
@@ -34,7 +35,8 @@ export default function SeatsModal(props) {
         </Modal>
     ) : (
         <Modal
-        {...props}
+        show={props.show}
+        onHide={props.onHide[1]}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered
