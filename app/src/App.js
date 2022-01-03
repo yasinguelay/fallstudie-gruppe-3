@@ -46,6 +46,7 @@ function App() {
   const [pk2ChildAmount, setPk2ChildAmount] = useState(0);
 
   const [seatsModalShow, setSeatsModalShow] = useState(false);
+  const [bookingModalShow, setBookingModalShow] = useState(false);
   const [checkBoxToggled, setCheckBoxToggled] = useState(false);
   const [checkoutEntered, setCheckoutEntered] = useState(false);
 
@@ -407,9 +408,16 @@ function App() {
 
   const handleSeatsModalHide = [
     (e) => {
-      window.location.reload();
+      fetch('https://fallstudie-gruppe-3.herokuapp.com/filme')
+        .then(res => res.json())
+        .then((result) => {
+            setFetchResult(result);
+          }, (error) => {
+          setFetchResult('Init Fetch Failed!');
+        });
     }, (e) => {
       loginWithRedirect();
+      setSeatsModalShow(false);
     }
   ];
 
@@ -417,42 +425,13 @@ function App() {
     (e) => {
         window.location.reload();
     }, (e) => {
-      showDetails.current.scrollIntoView();
-
-      const seatsForChosenShow = [[]];
-      let pk1FreeSeatsTotal = 0;
-      let pk2FreeSeatsTotal = 0;
-
-      for (const seat of chosenMovieDetails.vorstellungen.find(e => e.startzeit === chosenShow).sitzplaetze) {
-        for (const row of seatsForChosenShow) {
-          const indexOfDayArray = seatsForChosenShow.indexOf(row);
-          
-          if (row.length === 0 || seat.reihe === row[0].reihe) {
-            row.push({...seat});
-          } else if (indexOfDayArray === seatsForChosenShow.length - 1) {
-            seatsForChosenShow.push([{...seat}]);
-            break;
-          }
-        }
-
-        if (seat.reserviert === false && seat.reihe <= 'G') {
-          pk1FreeSeatsTotal++;
-        } else if (seat.reserviert === false && seat.reihe > 'G') {
-          pk2FreeSeatsTotal++;
-        }
-      }
-
-      setChosenShowSeats(seatsForChosenShow);
-      setChosenHall(chosenMovieDetails.vorstellungen.find(e => e.startzeit === chosenShow).saal);
-      setPk1FreeSeatsTotal(pk1FreeSeatsTotal);
-      setPk2FreeSeatsTotal(pk2FreeSeatsTotal);
-      setPk1SelectableSeats(0);
-      setPk2SelectableSeats(0);
-      setPk1AdultAmount(0);
-      setPk1ChildAmount(0);
-      setPk2AdultAmount(0);
-      setPk2ChildAmount(0);
-      setChosenSeatsToBook([]);
+      fetch('https://fallstudie-gruppe-3.herokuapp.com/filme')
+        .then(res => res.json())
+        .then((result) => {
+            setFetchResult(result);
+          }, (error) => {
+          setFetchResult('Init Fetch Failed!');
+        });
     }
 ];
 
@@ -465,6 +444,12 @@ function App() {
       setFetchResult('Init Fetch Failed!');
     });
   }, []);
+
+  useEffect(() => {
+    if (document.getElementById('movieTitle')) {
+      setChosenMovieDetails(fetchResult.find(m => m.titel === document.getElementById('movieTitle').innerText));
+    }
+  }, [fetchResult]);
 
 
   useEffect(() => {
@@ -529,6 +514,8 @@ function App() {
       setPk2AdultAmount(0);
       setPk2ChildAmount(0);
       setChosenSeatsToBook([]);
+      setBookingModalShow(false);
+      setSeatsModalShow(false);
     }
   }, [chosenShow, chosenMovieDetails]);
 
@@ -636,7 +623,7 @@ function App() {
             <Container style={{paddingLeft: '10rem', paddingRight: '10rem', marginBottom: '7rem'}}>
               <Row style={{marginBottom: '0.5rem'}}>
                 <Col style={{padding: 0}}>
-                  <h3>{chosenMovie}</h3>
+                  <h3 id="movieTitle">{chosenMovie}</h3>
                 </Col>
               </Row>
               <Row style={{backgroundColor: '#404B62', marginBottom: '0.5rem', paddingTop: '1rem', paddingBottom: '1rem'}}>
@@ -995,7 +982,7 @@ function App() {
                     <Row>
                       <Col>
                         <div className='fw-bold mb-3'>Ihre Daten:</div>
-                        <CheckoutForm chosenSeatsToBook = {chosenSeatsToBook} onHide={handleBookingModalHide} totalAmount={(pk1ChildAmount * pk1ChildPrice + pk2ChildAmount * pk2ChildPrice + pk1AdultAmount * pk1AdultPrice + pk2AdultAmount * pk2AdultPrice)} checkBoxToggled={checkBoxToggled} setFetchResult={setFetchResult} />
+                        <CheckoutForm bookingModalShow={bookingModalShow} setBookingModalShow={setBookingModalShow} chosenSeatsToBook = {chosenSeatsToBook} onHide={handleBookingModalHide} totalAmount={(pk1ChildAmount * pk1ChildPrice + pk2ChildAmount * pk2ChildPrice + pk1AdultAmount * pk1AdultPrice + pk2AdultAmount * pk2AdultPrice)} checkBoxToggled={checkBoxToggled} setFetchResult={setFetchResult} />
                       </Col>
                       <Col xs={6} className='ps-5'>
                         <Row className='mb-2'>

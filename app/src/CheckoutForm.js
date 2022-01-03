@@ -10,7 +10,6 @@ import Modal from 'react-bootstrap/Modal';
 
 export function CheckoutForm(props) {
     const [validated, setValidated] = useState(false);
-    const [bookingModalShow, setBookingModalShow] = useState(false);
     const [bookingSucceeded, setBookingSucceeded] = useState(false);
 
     const { user } = useAuth0();
@@ -37,11 +36,11 @@ export function CheckoutForm(props) {
             })
               .then((result) => {
                 if (!result.ok) {
-                  setBookingModalShow(true);
+                  props.setBookingModalShow(true);
                 }
                 
                 setBookingSucceeded(true);
-                setBookingModalShow(true);
+                props.setBookingModalShow(true);
               }, (error) => {
                   props.setFetchResult('Init Fetch Failed!');
               });
@@ -100,7 +99,7 @@ export function CheckoutForm(props) {
       {
         bookingSucceeded ? (
             <Modal
-            show={bookingModalShow}
+            show={props.bookingModalShow}
             onHide={props.onHide[0]}
             size="lg"
             aria-labelledby="contained-modal-title-vcenter"
@@ -126,7 +125,7 @@ export function CheckoutForm(props) {
             </Modal>
         ) : (
             <Modal
-            show={bookingModalShow}
+            show={props.bookingModalShow}
             onHide={props.onHide[1]}
             size="lg"
             aria-labelledby="contained-modal-title-vcenter"
