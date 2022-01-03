@@ -32,7 +32,7 @@ halls.route('/saele').post(function (req, res) {
         if (err) {
           res
             .status(400)
-            .send(`Saal ${newHallToInsert.nummer} wurde bereits angelegt.`);
+            .send(`Saal ${newHallToInsert.nummer} wurde bereits angelegt!`);
         } else {
           console.log(`Saal ${newHallToInsert.nummer} wurde angelegt.`);
           res.status(201).send();

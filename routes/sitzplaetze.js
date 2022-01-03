@@ -67,9 +67,15 @@ seats.route('/sitzplaetze/reservieren').put(async function (req, res) {
       ],
     };
 
-    const result = await dbConnect
-      .collection('film')
-      .updateOne(seatToReserve, updateQuery, arrayFilters);
+    let result;
+
+    try {
+      result = await dbConnect
+        .collection('film')
+        .updateOne(seatToReserve, updateQuery, arrayFilters);
+    } catch (e) {
+      continue;
+    }
 
     if (result.modifiedCount === 0) {
       for (let i = 0; i < index; i++) {
@@ -106,8 +112,8 @@ seats.route('/sitzplaetze/reservieren').put(async function (req, res) {
     }
   }
 
-  res.status(200).send('Glückwunsch');
-  setTimeout(undoAfterBlockTime, 30 * 1000);
+  res.status(200).send('Reserved');
+  setTimeout(undoAfterBlockTime, 5 * 60 * 1000);
 });
 
 seats.route('/sitzplaetze/checkout').put(async function (req, res) {
@@ -139,9 +145,16 @@ seats.route('/sitzplaetze/checkout').put(async function (req, res) {
       ],
     };
 
-    const result = await dbConnect
-      .collection('film')
-      .updateOne(seatToReserve, updateQuery, arrayFilters);
+    let result;
+
+    try {
+      result = await dbConnect
+        .collection('film')
+        .updateOne(seatToReserve, updateQuery, arrayFilters);
+    } catch (e) {
+      res.status(400).send('Probieren Sie es später erneut!');
+      return;
+    }
 
     if (result.modifiedCount === 0) {
       for (let i = 0; i < index; i++) {

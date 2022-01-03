@@ -18,6 +18,7 @@ movies
     dbConnect
       .collection('film')
       .find({})
+      .project({ _id: 0 })
       .toArray(function (err, result) {
         if (err) {
           res.status(400).send('Fehler beim Abrufen der Filme!');
@@ -41,30 +42,41 @@ movies
     const dbConnect = dbo.getDb();
     const newMovieToInsert = { titel: req.body.titel };
 
-    const responseImdbSearchMovie = await fetch(
-      'https://imdb-api.com/en/API/SearchMovie/' +
-        process.env.IMDB_API +
-        '/' +
-        newMovieToInsert.titel
-    );
-    const resultsImdbSearchMovie = await responseImdbSearchMovie.json();
+    try {
+      const responseImdbSearchMovie = await fetch(
+        'https://imdb-api.com/en/API/SearchMovie/' +
+          process.env.IMDB_API +
+          '/' +
+          newMovieToInsert.titel
+      );
+      const resultsImdbSearchMovie = await responseImdbSearchMovie.json();
 
-    const responseImdbTitle = await fetch(
-      'https://imdb-api.com/de/API/Title/' +
-        process.env.IMDB_API +
-        '/' +
-        resultsImdbSearchMovie.results[0].id
-    );
-    const resultsImdbTitle = await responseImdbTitle.json();
+      const responseImdbTitle = await fetch(
+        'https://imdb-api.com/de/API/Title/' +
+          process.env.IMDB_API +
+          '/' +
+          resultsImdbSearchMovie.results[0].id
+      );
 
-    newMovieToInsert.bild = resultsImdbTitle.image;
-    newMovieToInsert.dauer = parseInt(resultsImdbTitle.runtimeMins);
-    newMovieToInsert.beschreibung =
-      resultsImdbTitle.plotLocal ===
-      'Momentan gibt es keine deutsche Übersetzung. Unterstütze uns indem du eine hinzufügst.'
-        ? resultsImdbTitle.plot
-        : resultsImdbTitle.plotLocal;
-    newMovieToInsert.trailer = '';
+      if (responseImdbTitle.ok) {
+        const resultsImdbTitle = await responseImdbTitle.json();
+        newMovieToInsert.bild = resultsImdbTitle.image;
+        newMovieToInsert.dauer = parseInt(resultsImdbTitle.runtimeMins);
+        newMovieToInsert.beschreibung =
+          resultsImdbTitle.plotLocal ===
+          'Momentan gibt es keine deutsche Übersetzung. Unterstütze uns indem du eine hinzufügst.'
+            ? resultsImdbTitle.plot
+            : resultsImdbTitle.plotLocal;
+        newMovieToInsert.trailer = '';
+        newMovieToInsert.vorstellungen = [];
+      } else {
+        res.status(400).send('Film konnte nicht angelegt werden!');
+        return;
+      }
+    } catch (e) {
+      res.status(400).send('Film konnte nicht angelegt werden!');
+      return;
+    }
 
     dbConnect
       .collection('film')

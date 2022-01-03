@@ -109,12 +109,17 @@ shows
       },
     };
 
-    const sameDaySameHallShows = await dbConnect
-      .collection('film')
-      .aggregate(projection)
-      .toArray();
+    let sameDaySameHallShows;
 
-    console.log(sameDaySameHallShows);
+    try {
+      sameDaySameHallShows = await dbConnect
+        .collection('film')
+        .aggregate(projection)
+        .toArray();
+    } catch (e) {
+      res.status(400).send('Vorstellung konnte nicht angelegt werden!');
+      return;
+    }
 
     const newShowStartTime = new Date(req.body.startzeit);
     const newShowEndTime = new Date(
@@ -124,8 +129,6 @@ shows
       'de-DE',
       { hour: '2-digit', minute: '2-digit' },
     ];
-
-    console.log(newShowEndTime);
 
     if (
       newShowEndTime.toLocaleTimeString(...toLocaleTimeStringLimitation) >
