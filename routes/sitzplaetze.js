@@ -266,4 +266,55 @@ seats.route('/sitzplaetze/checkout').put(async function (req, res) {
   res.status(200).send('Booked');
 });
 
+seats.route('/sitzplaetze/freigeben').put(async function (req, res) {
+  // #swagger.tags = ['Sitzplatz']
+  // #swagger.description = 'Sitzplatz freigebn.'
+
+  /* #swagger.parameters['seats'] = {
+               in: 'body',
+               description: 'Zu freigebende Sitze.',
+               required: true,
+               type: 'object',
+               schema: { $ref: "#/definitions/SitzeReservieren" }
+        } */
+
+  const dbConnect = dbo.getDb();
+
+  for (const [, seat] of req.body.entries()) {
+    const seatToReserve = {
+      titel: seat.titel,
+    };
+
+    const updateQuery = {
+      $set: {
+        'vorstellungen.$[i].sitzplaetze.$[j].reserviert': false,
+      },
+    };
+
+    const arrayFilters = {
+      arrayFilters: [
+        {
+          'i.saal': seat.saal,
+          'i.startzeit': seat.startzeit,
+        },
+        {
+          'j.reihe': seat.reihe,
+          'j.nummer': seat.nummer,
+          'j.reserviert': seat.wert,
+        },
+      ],
+    };
+
+    try {
+      await dbConnect
+        .collection('film')
+        .updateOne(seatToReserve, updateQuery, arrayFilters);
+    } catch (e) {
+      continue;
+    }
+  }
+
+  res.status(200).send('Released');
+});
+
 module.exports = seats;

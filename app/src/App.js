@@ -47,6 +47,7 @@ function App() {
 
   const [seatsModalShow, setSeatsModalShow] = useState(false);
   const [checkBoxToggled, setCheckBoxToggled] = useState(false);
+  const [checkoutEntered, setCheckoutEntered] = useState(false);
 
   const movieDetails = useRef(null);
   const showDetails = useRef(null);
@@ -260,11 +261,14 @@ function App() {
   };
   
   const handleDeleteSelectionPk1 = (e) => {
+    const newChosenSeatsToBook = chosenSeatsToBook.filter(e => e.reihe > 'G');
+    const resetChosenSeatsToBook = chosenSeatsToBook.filter(e => e.reihe <= 'G')
+    
     setPk1FreeSeatsTotal(pk1FreeSeatsTotal + pk1AdultAmount + pk1ChildAmount);
     setPk1SelectableSeats(0);
     setPk1AdultAmount(0);
     setPk1ChildAmount(0);
-    setChosenSeatsToBook(chosenSeatsToBook.filter(e => e.reihe > 'G'));
+    setChosenSeatsToBook(newChosenSeatsToBook);
     setSeatsSelected(false);
 
     for (const row of chosenShowSeats) {
@@ -274,14 +278,35 @@ function App() {
         }
       }
     }
+
+    if (checkoutEntered) {
+
+      setCheckoutEntered(false);
+
+      fetch('https://fallstudie-gruppe-3.herokuapp.com/sitzplaetze/freigeben', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(resetChosenSeatsToBook.map(e => ({...e, wert: 'r' + user.sub})))
+      })
+        .then((result) => {
+          ;
+        }, (error) => {
+          ;
+        });
+    }
   };
   
   const handleDeleteSelectionPk2 = (e) => {
+    const newChosenSeatsToBook = chosenSeatsToBook.filter(e => e.reihe <= 'G');
+    const resetChosenSeatsToBook = chosenSeatsToBook.filter(e => e.reihe > 'G')
+
     setPk2FreeSeatsTotal(pk2FreeSeatsTotal + pk2AdultAmount + pk2ChildAmount);
     setPk2SelectableSeats(0);
     setPk2AdultAmount(0);
     setPk2ChildAmount(0);
-    setChosenSeatsToBook(chosenSeatsToBook.filter(e => e.reihe <= 'G'));
+    setChosenSeatsToBook(newChosenSeatsToBook);
     setSeatsSelected(false);
 
     for (const row of chosenShowSeats) {
@@ -290,6 +315,24 @@ function App() {
           seat.reserviert = false;
         }
       }
+    }
+
+    if (checkoutEntered) {
+
+      setCheckoutEntered(false);
+
+      fetch('https://fallstudie-gruppe-3.herokuapp.com/sitzplaetze/freigeben', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(resetChosenSeatsToBook.map(e => ({...e, wert: 'r' + user.sub})))
+      })
+        .then((result) => {
+          ;
+        }, (error) => {
+          ;
+        });
     }
   };
 
@@ -310,6 +353,7 @@ function App() {
             }
             
             setSeatsSelected(true);
+            setCheckoutEntered(true);
           }, (error) => {
             setFetchResult('Init Fetch Failed!');
           });
