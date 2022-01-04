@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import reportWebVitals from './reportWebVitals';
 
+// import Admin from './Admin';
 import App from './App';
 import Agb from './Agb';
 import Auth0ProviderWithHistory from './auth/auth0-provider-with-history';
@@ -23,6 +24,7 @@ ReactDOM.render(
             <Route path="/agb" element={<Agb />} />
             <Route path="/datenschutzerklaerung" element={<Datenschutzerklaerung />} />
             <Route path="/impressum" element={<Impressum />} />
+            {/* <Route path="/admin" element={<Admin />} /> */}
         </Routes>
       </Auth0ProviderWithHistory>
     </BrowserRouter>

@@ -64,6 +64,8 @@ function App() {
     slidesToScroll: 4
   };
 
+  console.log(user);
+
   const beforeunloadHandler = useCallback(
     () => {
         fetch('https://fallstudie-gruppe-3.herokuapp.com/sitzplaetze/freigeben', {
@@ -610,7 +612,7 @@ function App() {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav style={{ flexBasis: 0 }} className="me-auto flex-grow-1 justify-content-center">
               <Nav.Link href="/">Programm</Nav.Link>
-              {/* <Nav.Link href="">Admin</Nav.Link> */}
+              {/* {user?.['https://fallstudie-gruppe-3.herokuapp.com/roles'][0] === 'cinema-admin' ? <Nav.Link href="admin">Admin</Nav.Link> : null}  */}
             </Nav>
           </Navbar.Collapse>
         </Container>
