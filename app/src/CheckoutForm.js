@@ -37,6 +37,7 @@ export function CheckoutForm(props) {
               .then((result) => {
                 if (!result.ok) {
                   props.setBookingModalShow(true);
+                  return;
                 }
                 
                 setBookingSucceeded(true);
@@ -146,7 +147,7 @@ export function CheckoutForm(props) {
                     </p>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant='warning' onClick={props.onHide[1]}>Login</Button>
+                    <Button variant='warning' onClick={props.onHide[1]}>Schließen</Button>
                 </Modal.Footer>
             </Modal>
         )
