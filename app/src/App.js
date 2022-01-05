@@ -22,7 +22,7 @@ import SeatsModal from './SeatsModal.js';
 import Tooltip from 'react-bootstrap/Tooltip';
 
 function App() {
-  const { isLoading, isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
+  const { isLoading, isAuthenticated, getAccessTokenSilently, loginWithRedirect, logout, user } = useAuth0();
 
   const [fetchResult, setFetchResult] = useState([]);
   const [chosenMovie, setChosenMovie] = useState('');
@@ -399,29 +399,35 @@ function App() {
   const handleNextClick = (e) => {
     if ((pk1AdultAmount || pk1ChildAmount || pk2AdultAmount || pk2ChildAmount) && !pk1SelectableSeats && !pk2SelectableSeats) {
       if(isAuthenticated) {
-        fetch('https://fallstudie-gruppe-3.herokuapp.com/sitzplaetze/reservieren', {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(chosenSeatsToBook.map(e => ({...e, wert: 'r' + user.sub})))
-        })
-          .then((result) => {
-            if (!result.ok) {
-              setSeatsModalShow(true);
-              return;
-            }
-            
-            setSeatsSelected(true);
-            setCheckoutEntered(true);
-          }, (error) => {
-            setFetchResult('Init Fetch Failed!');
-          });
-
-          window.addEventListener("beforeunload", beforeunloadHandler);
+        getAccessTokenSilently().then(res => {
+          fetch('https://fallstudie-gruppe-3.herokuapp.com/sitzplaetze/reservieren', {
+            method: 'PUT',
+            headers: {
+               Authorization: `Bearer ${res}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(chosenSeatsToBook.map(e => ({...e, wert: 'r' + user.sub})))
+          })
+            .then((result) => {
+              if (!result.ok) {
+                setSeatsModalShow(true);
+                return;
+              }
+              
+              setSeatsSelected(true);
+              setCheckoutEntered(true);
+            }, (error) => {
+              setFetchResult('Init Fetch Failed!');
+            });
+  
+            window.addEventListener("beforeunload", beforeunloadHandler);
+        }, (error) => {
+          setFetchResult('Init Fetch Failed!');
+        });
       } else {
         setSeatsModalShow(true);
       }
+
     }
   };
 
