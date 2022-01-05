@@ -64,7 +64,6 @@ function App() {
     slidesToScroll: 4
   };
 
-  console.log(user);
 
   const beforeunloadHandler = useCallback(
     () => {
@@ -500,6 +499,29 @@ function App() {
     }
 ];
 
+const handleAdminClick = (e) => {
+  e.preventDefault();
+  
+  getAccessTokenSilently().then(res => {
+    fetch('https://fallstudie-gruppe-3.herokuapp.com/admin', {
+      headers: {
+        Authorization: `Bearer ${res}`,
+      }
+    })
+      .then((result) => {
+        return result.text();
+      })
+      .then((result) => {
+        document.getElementById('home').innerText = result;
+      }, (error) => {
+        document.getElementById('home').innerText = 'Unauthorized!'
+      });
+
+    }, (err) => {
+      document.getElementById('home').innerText = 'Bitte versuchen Sie es später erneut.'
+    });
+}
+
   useEffect(() => {
     fetch('https://fallstudie-gruppe-3.herokuapp.com/filme')
     .then(res => res.json())
@@ -649,7 +671,7 @@ function App() {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav style={{ flexBasis: 0 }} className="me-auto flex-grow-1 justify-content-center">
               <Nav.Link href="/">Programm</Nav.Link>
-              {user?.['https://fallstudie-gruppe-3.herokuapp.com/roles'][0] === 'cinema-admin' ? <Nav.Link href="admin">Admin</Nav.Link> : null} 
+              {user?.['https://fallstudie-gruppe-3.herokuapp.com/roles'][0] === 'cinema-admin' ? <Nav.Link onClick={handleAdminClick} href="admin">Admin</Nav.Link> : null} 
             </Nav>
           </Navbar.Collapse>
         </Container>
