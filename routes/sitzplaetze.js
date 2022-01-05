@@ -11,12 +11,13 @@ seats
     // #swagger.tags = ['Sitzplatz']
     // #swagger.description = 'Sitzplatz reservieren.'
 
-    /* #swagger.parameters['SitzeReservieren'] = {
-               in: 'body',
-               description: 'Zu reservierende Sitze.',
+    /* #swagger.requestBody = {
                required: true,
-               type: 'object',
-               schema: { $ref: "#/definitions/SitzeReservieren" }
+               content: {
+                 "application/json": {
+                   schema: { $ref: "#/definitions/SitzeReservieren" }
+                 }
+               }
         } */
 
     // #swagger.security = [{bearerAuth: []}]
@@ -139,12 +140,13 @@ seats
     // #swagger.tags = ['Sitzplatz']
     // #swagger.description = 'Sitzplatz buchen.'
 
-    /* #swagger.parameters['SitzeBuchen'] = {
-               in: 'body',
-               description: 'Zu buchende Sitze.',
+    /* #swagger.requestBody = {
                required: true,
-               type: 'object',
-               schema: { $ref: "#/definitions/SitzeBuchen" }
+               content: {
+                 "application/json": {
+                   schema: { $ref: "#/definitions/SitzeBuchen" }
+                 }
+                }
         } */
 
     // #swagger.security = [{bearerAuth: []}]
@@ -282,12 +284,13 @@ seats
     // #swagger.tags = ['Sitzplatz']
     // #swagger.description = 'Sitzplatz freigeben.'
 
-    /* #swagger.parameters['SitzeFreigeben'] = {
-               in: 'body',
-               description: 'Zu freigebende Sitze.',
+    /* #swagger.requestBody = {
                required: true,
-               type: 'object',
-               schema: { $ref: "#/definitions/SitzeFreigeben" }
+               content: {
+                 "application/json": {
+                   schema: { $ref: "#/definitions/SitzeFreigeben" }
+                 }
+                }
         } */
 
     // #swagger.security = [{bearerAuth: []}]

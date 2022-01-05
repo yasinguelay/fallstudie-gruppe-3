@@ -9,15 +9,20 @@ shows
   .put(function (req, res) {
     // #swagger.tags = ['Vorstellung']
     // #swagger.description = 'Vorstellungen für einen Tag abrufen.'
-    /* #swagger.parameters['VorstellungAbrufen'] = {
-               in: 'body',
-               description: 'Abzurufende Vorstellungen für einen Tag.',
+    /* #swagger.requestBody = {
                required: true,
-               type: 'object',
-               schema: { $ref: "#/definitions/VorstellungenAbrufen" }
+               content: {
+                 "application/json": {
+                   schema: { $ref: "#/definitions/VorstellungenAbrufen" }
+                 }
+                }
         } */
     /* #swagger.responses[200] = { 
-               schema: { $ref: "#/definitions/Vorstellungen" }
+               ceontent: {
+                 "application/json": {
+                   schema: { $ref: "#/definitions/Vorstellungen" }
+                 }
+               }
         } */
 
     const dbConnect = dbo.getDb();
@@ -68,12 +73,13 @@ shows
     async function (req, res) {
       // #swagger.tags = ['Vorstellung']
       // #swagger.description = 'Vorstellung anlegen.'
-      /* #swagger.parameters['VorstellungAnlegen'] = {
-               in: 'body',
-               description: 'Anzulegender Film.',
+      /* #swagger.requestBody = {
                required: true,
-               type: 'object',
-               schema: { $ref: "#/definitions/VorstellungAnlegen" }
+               content: {
+                 "application/json": {
+                   schema: { $ref: "#/definitions/VorstellungAnlegen" }
+                 }
+                }
         } */
 
       // #swagger.security = [{bearerAuth: []}]
@@ -216,12 +222,13 @@ shows
   .delete([checkJwt, checkPermissions('alter:cinema')], function (req, res) {
     // #swagger.tags = ['Vorstellung']
     // #swagger.description = 'Vorstellung löschen.'
-    /* #swagger.parameters['VorstellungLöschen'] = {
-               in: 'body',
-               description: 'Zu entfernende Vorstellung.',
+    /* #swagger.requestBody = {
                required: true,
-               type: 'object',
-               schema: { $ref: "#/definitions/VorstellungLöschen" }
+               content: {
+                 "application/json": {
+                   schema: { $ref: "#/definitions/VorstellungLöschen" }
+                 }
+                }
         } */
 
     /* #swagger.parameters['startzeit'] = { 

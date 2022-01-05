@@ -10,12 +10,13 @@ halls
     // #swagger.tags = ['Saal']
     // #swagger.description = 'Saal anlegen.'
 
-    /* #swagger.parameters['SaalAnlegen'] = {
-               in: 'body',
-               description: 'Anzulegender Saal.',
+    /* #swagger.requestBody = {
                required: true,
-               type: 'object',
-               schema: { $ref: "#/definitions/SaalAnlegen" }
+               content: {
+                 "application/json": {
+                   schema: { $ref: "#/definitions/SaalAnlegen" }
+                 }
+               }
         } */
 
     /* #swagger.responses[201] */

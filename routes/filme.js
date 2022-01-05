@@ -13,7 +13,11 @@ movies
     // #swagger.description = 'Alle Filme abrufen.'
 
     /* #swagger.responses[200] = { 
-               schema: { $ref: "#/definitions/Film" }
+               content: {
+                 "aplication/json": {
+                    schema: { $ref: "#/definitions/Film" }
+                 }
+               }  
         } */
 
     const dbConnect = dbo.getDb();
@@ -36,12 +40,13 @@ movies
       // #swagger.tags = ['Film']
       // #swagger.description = 'Film anlegen.'
 
-      /* #swagger.parameters['FilmAnlegen'] = {
-               in: 'body',
-               description: 'Anzulegender Film.',
+      /* #swagger.requestBody = {
                required: true,
-               type: 'object',
-               schema: { $ref: "#/definitions/FilmAnlegen" }
+               content: {
+                 "application/json": {
+                   schema: { $ref: "#/definitions/FilmAnlegen" }
+                 }
+               }
         } */
 
       // #swagger.security = [{bearerAuth: []}]
