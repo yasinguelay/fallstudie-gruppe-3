@@ -20,6 +20,7 @@ halls
 
     /* #swagger.responses[201] */
     /* #swagger.responses[400] */
+    // #swagger.security = [{bearerAuth: []}]
 
     const dbConnect = dbo.getDb();
     const newHallToInsert = {
@@ -59,6 +60,7 @@ halls
   .delete([checkJwt, checkPermissions('alter:cinema')], (req, res) => {
     // #swagger.tags = ['Saal']
     // #swagger.description = 'Saal löschen.'
+    // #swagger.security = [{bearerAuth: []}]
 
     const dbConnect = dbo.getDb();
     const hallToDelete = { nummer: parseInt(req.params.nummer) };

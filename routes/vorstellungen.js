@@ -76,6 +76,8 @@ shows
                schema: { $ref: "#/definitions/VorstellungAnlegen" }
         } */
 
+      // #swagger.security = [{bearerAuth: []}]
+
       const dbConnect = dbo.getDb();
       const cinemaOpeningTime = '12:30';
       const cinemaClosingTime = '23:30';
@@ -217,6 +219,8 @@ shows
     /* #swagger.parameters['startzeit'] = { 
                description: 'Format: 2021-12-19T00:00'
         } */
+
+    // #swagger.security = [{bearerAuth: []}]
 
     const dbConnect = dbo.getDb();
     const showToDelete = { titel: req.body.film };

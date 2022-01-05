@@ -68,9 +68,11 @@ function App() {
 
   const beforeunloadHandler = useCallback(
     () => {
+      getAccessTokenSilently().then(res => {
         fetch('https://fallstudie-gruppe-3.herokuapp.com/sitzplaetze/freigeben', {
           method: 'PUT',
           headers: {
+            Authorization: `Bearer ${res}`,
             'Content-Type': 'application/json'
           },
           body: JSON.stringify(chosenSeatsToBook.map(e => ({...e, wert: 'r' + user.sub})))
@@ -80,7 +82,10 @@ function App() {
           }, (error) => {
             ;
           });
-    }, [chosenSeatsToBook, user]);
+      }, (error) => {
+        ;
+      });
+    }, [chosenSeatsToBook, getAccessTokenSilently, user]);
 
 
   const handleMovieChosen = (e) => {
@@ -118,19 +123,25 @@ function App() {
 
       setCheckoutEntered(false);
 
-      fetch('https://fallstudie-gruppe-3.herokuapp.com/sitzplaetze/freigeben', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(chosenSeatsToBook.map(e => ({...e, wert: 'r' + user.sub})))
-      })
-        .then((result) => {
-          ;
-        }, (error) => {
+      getAccessTokenSilently().then(res => {
+        fetch('https://fallstudie-gruppe-3.herokuapp.com/sitzplaetze/freigeben', {
+          method: 'PUT',
+          headers: {
+            Authorization: `Bearer ${res}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(chosenSeatsToBook.map(e => ({...e, wert: 'r' + user.sub})))
+        })
+          .then((result) => {
+            ;
+          }, (error) => {
+            ;
+          });
+  
+        }, (err) => {
           ;
         });
-
+        
         window.removeEventListener("beforeunload", beforeunloadHandler);
     }
   };
@@ -143,20 +154,28 @@ function App() {
 
       setCheckoutEntered(false);
 
-      fetch('https://fallstudie-gruppe-3.herokuapp.com/sitzplaetze/freigeben', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(chosenSeatsToBook.map(e => ({...e, wert: 'r' + user.sub})))
-      })
-        .then((result) => {
-          ;
-        }, (error) => {
+
+      getAccessTokenSilently().then(res => {
+        fetch('https://fallstudie-gruppe-3.herokuapp.com/sitzplaetze/freigeben', {
+          method: 'PUT',
+          headers: {
+            Authorization: `Bearer ${res}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(chosenSeatsToBook.map(e => ({...e, wert: 'r' + user.sub})))
+        })
+          .then((result) => {
+            ;
+          }, (error) => {
+            ;
+          });
+  
+        }, (err) => {
           ;
         });
-
-        window.removeEventListener("beforeunload", beforeunloadHandler);
+        
+      
+      window.removeEventListener("beforeunload", beforeunloadHandler);
     }
   };
 
@@ -339,20 +358,26 @@ function App() {
 
       setCheckoutEntered(false);
 
-      fetch('https://fallstudie-gruppe-3.herokuapp.com/sitzplaetze/freigeben', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(chosenSeatsToBook.map(e => ({...e, wert: 'r' + user.sub})))
-      })
-        .then((result) => {
-          ;
-        }, (error) => {
+      getAccessTokenSilently().then(res => {
+        fetch('https://fallstudie-gruppe-3.herokuapp.com/sitzplaetze/freigeben', {
+          method: 'PUT',
+          headers: {
+            Authorization: `Bearer ${res}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(chosenSeatsToBook.map(e => ({...e, wert: 'r' + user.sub})))
+        })
+          .then((result) => {
+            ;
+          }, (error) => {
+            ;
+          });
+  
+        }, (err) => {
           ;
         });
-
-        window.removeEventListener("beforeunload", beforeunloadHandler);
+        
+      window.removeEventListener("beforeunload", beforeunloadHandler);
     }
 
     setChosenSeatsToBook(chosenSeatsToBook.filter(e => e.reihe > 'G'));
@@ -377,20 +402,26 @@ function App() {
 
       setCheckoutEntered(false);
 
-      fetch('https://fallstudie-gruppe-3.herokuapp.com/sitzplaetze/freigeben', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(chosenSeatsToBook.map(e => ({...e, wert: 'r' + user.sub})))
-      })
-        .then((result) => {
-          ;
-        }, (error) => {
+      getAccessTokenSilently().then(res => {
+        fetch('https://fallstudie-gruppe-3.herokuapp.com/sitzplaetze/freigeben', {
+          method: 'PUT',
+          headers: {
+            Authorization: `Bearer ${res}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(chosenSeatsToBook.map(e => ({...e, wert: 'r' + user.sub})))
+        })
+          .then((result) => {
+            ;
+          }, (error) => {
+            ;
+          });
+  
+        }, (err) => {
           ;
         });
-
-        window.removeEventListener("beforeunload", beforeunloadHandler);
+        
+      window.removeEventListener("beforeunload", beforeunloadHandler);
     }
 
     setChosenSeatsToBook(chosenSeatsToBook.filter(e => e.reihe <= 'G'));

@@ -27,7 +27,7 @@ app.get('/*', function (req, res) {
 // Global error handling
 app.use(function (err, _req, res, _next) {
   console.error(err.stack);
-  res.status(500).send('Something broke!');
+  res.status(500).send('Unauthorized!');
 });
 
 // perform a database connection when the server starts

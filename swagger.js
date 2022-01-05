@@ -1,4 +1,4 @@
-const swaggerAutogen = require('swagger-autogen')();
+const swaggerAutogen = require('swagger-autogen')({ openapi: '3.0.0' });
 
 const outputFile = './swagger_output.json';
 const endpointsFiles = ['./routes/*.js'];
@@ -37,22 +37,13 @@ const doc = {
         "Folgende Endpoints können genutzt werden, um mit der Ressource 'Sitzplatz' zu interagieren.",
     },
   ],
-  /* securityDefinitions: {
-        api_key: {
-            type: "apiKey",
-            name: "api_key",
-            in: "header"
-        },
-        petstore_auth: {
-            type: "oauth2",
-            authorizationUrl: "https://petstore.swagger.io/oauth/authorize",
-            flow: "implicit",
-            scopes: {
-                read_pets: "read your pets",
-                write_pets: "modify pets in your account"
-            }
-        }
-    }, */
+  securityDefinitions: {
+    bearerAuth: {
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+    },
+  },
   definitions: {
     Film: {
       titel: 'Inception',

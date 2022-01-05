@@ -12,7 +12,7 @@ export function CheckoutForm(props) {
     const [validated, setValidated] = useState(false);
     const [bookingSucceeded, setBookingSucceeded] = useState(false);
 
-    const { user } = useAuth0();
+    const { user, getAccessTokenSilently } = useAuth0();
 
     const handleSubmit = (event) => {
       const form = event.currentTarget;
@@ -27,24 +27,29 @@ export function CheckoutForm(props) {
       setValidated(true);
 
       if (props.checkBoxToggled) {
-          fetch('https://fallstudie-gruppe-3.herokuapp.com/sitzplaetze/checkout', {
-              method: 'PUT',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify([props.chosenSeatsToBook.map(e => ({...e, wert: 'r' + user.sub})), props.totalAmount, document.getElementById('Vorname').value, document.getElementById('E-Mail').value])
-            })
-              .then((result) => {
-                if (!result.ok) {
+        getAccessTokenSilently().then(res => {
+            fetch('https://fallstudie-gruppe-3.herokuapp.com/sitzplaetze/checkout', {
+                method: 'PUT',
+                headers: {
+                  Authorization: `Bearer ${res}`,
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify([props.chosenSeatsToBook.map(e => ({...e, wert: 'r' + user.sub})), props.totalAmount, document.getElementById('Vorname').value, document.getElementById('E-Mail').value])
+              })
+                .then((result) => {
+                  if (!result.ok) {
+                    props.setBookingModalShow(true);
+                    return;
+                  }
+                  
+                  setBookingSucceeded(true);
                   props.setBookingModalShow(true);
-                  return;
-                }
-                
-                setBookingSucceeded(true);
-                props.setBookingModalShow(true);
-              }, (error) => {
-                  props.setFetchResult('Init Fetch Failed!');
-              });
+                }, (error) => {
+                    props.setFetchResult('Init Fetch Failed!');
+                });
+        }, (err) => {
+            props.setFetchResult('Init Fetch Failed!');
+        });
       }
     };
 

@@ -43,6 +43,8 @@ movies
                schema: { $ref: "#/definitions/FilmAnlegen" }
         } */
 
+      // #swagger.security = [{bearerAuth: []}]
+
       const dbConnect = dbo.getDb();
       const newMovieToInsert = { titel: req.body.titel };
 
@@ -102,6 +104,7 @@ movies
   .delete([checkJwt, checkPermissions('alter:cinema')], (req, res) => {
     // #swagger.tags = ['Film']
     // #swagger.description = 'Film löschen.'
+    // #swagger.security = [{bearerAuth: []}]
 
     const dbConnect = dbo.getDb();
     const movieToDelete = { titel: req.params.titel };

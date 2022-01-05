@@ -19,6 +19,8 @@ seats
                schema: { $ref: "#/definitions/SitzeReservieren" }
         } */
 
+    // #swagger.security = [{bearerAuth: []}]
+
     const dbConnect = dbo.getDb();
 
     const undoAfterBlockTime = function () {
@@ -144,6 +146,8 @@ seats
                type: 'object',
                schema: { $ref: "#/definitions/SitzeBuchen" }
         } */
+
+    // #swagger.security = [{bearerAuth: []}]
 
     const dbConnect = dbo.getDb();
 
@@ -285,6 +289,8 @@ seats
                type: 'object',
                schema: { $ref: "#/definitions/SitzeFreigeben" }
         } */
+
+    // #swagger.security = [{bearerAuth: []}]
 
     const dbConnect = dbo.getDb();
 
