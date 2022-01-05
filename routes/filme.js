@@ -36,7 +36,7 @@ movies
       // #swagger.tags = ['Film']
       // #swagger.description = 'Film anlegen.'
 
-      /* #swagger.parameters['newFilm'] = {
+      /* #swagger.parameters['FilmAnlegen'] = {
                in: 'body',
                description: 'Anzulegender Film.',
                required: true,

@@ -11,7 +11,7 @@ seats
     // #swagger.tags = ['Sitzplatz']
     // #swagger.description = 'Sitzplatz reservieren.'
 
-    /* #swagger.parameters['seats'] = {
+    /* #swagger.parameters['SitzeReservieren'] = {
                in: 'body',
                description: 'Zu reservierende Sitze.',
                required: true,
@@ -139,7 +139,7 @@ seats
     // #swagger.tags = ['Sitzplatz']
     // #swagger.description = 'Sitzplatz buchen.'
 
-    /* #swagger.parameters['seats'] = {
+    /* #swagger.parameters['SitzeBuchen'] = {
                in: 'body',
                description: 'Zu buchende Sitze.',
                required: true,
@@ -282,7 +282,7 @@ seats
     // #swagger.tags = ['Sitzplatz']
     // #swagger.description = 'Sitzplatz freigeben.'
 
-    /* #swagger.parameters['seats'] = {
+    /* #swagger.parameters['SitzeFreigeben'] = {
                in: 'body',
                description: 'Zu freigebende Sitze.',
                required: true,

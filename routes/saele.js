@@ -10,7 +10,7 @@ halls
     // #swagger.tags = ['Saal']
     // #swagger.description = 'Saal anlegen.'
 
-    /* #swagger.parameters['newHall'] = {
+    /* #swagger.parameters['SaalAnlegen'] = {
                in: 'body',
                description: 'Anzulegender Saal.',
                required: true,

@@ -95,7 +95,6 @@ const doc = {
       $saal: 1,
       $startzeit: '2021-12-19T00:00',
       $film: 'Inception',
-      $dauer: 148,
     },
     VorstellungLöschen: {
       $film: 'Inception',

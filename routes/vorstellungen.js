@@ -9,7 +9,7 @@ shows
   .put(function (req, res) {
     // #swagger.tags = ['Vorstellung']
     // #swagger.description = 'Vorstellungen für einen Tag abrufen.'
-    /* #swagger.parameters['getShows'] = {
+    /* #swagger.parameters['VorstellungAbrufen'] = {
                in: 'body',
                description: 'Abzurufende Vorstellungen für einen Tag.',
                required: true,
@@ -68,7 +68,7 @@ shows
     async function (req, res) {
       // #swagger.tags = ['Vorstellung']
       // #swagger.description = 'Vorstellung anlegen.'
-      /* #swagger.parameters['createShow'] = {
+      /* #swagger.parameters['VorstellungAnlegen'] = {
                in: 'body',
                description: 'Anzulegender Film.',
                required: true,
@@ -101,9 +101,17 @@ shows
         { $project: { _id: 0, dauer: 1, startzeit: 1 } },
       ];
 
-      const hall = await dbConnect.collection('saal').findOne({
-        nummer: req.body.saal,
-      });
+      let film, hall;
+
+      try {
+        film = await dbConnect.collection('film').findOne(movieToUpdate);
+
+        hall = await dbConnect.collection('saal').findOne({
+          nummer: req.body.saal,
+        });
+      } catch (e) {
+        res.status(400).send('Vorstellung konnte nicht angelegt werden!');
+      }
 
       const newShowToInsert = {
         $push: {
@@ -129,7 +137,7 @@ shows
 
       const newShowStartTime = new Date(req.body.startzeit);
       const newShowEndTime = new Date(
-        newShowStartTime.getTime() + 60000 * (req.body.dauer + breakAfterShow)
+        newShowStartTime.getTime() + 60000 * (film.dauer + breakAfterShow)
       );
       const toLocaleTimeStringLimitation = [
         'de-DE',
@@ -208,7 +216,7 @@ shows
   .delete([checkJwt, checkPermissions('alter:cinema')], function (req, res) {
     // #swagger.tags = ['Vorstellung']
     // #swagger.description = 'Vorstellung löschen.'
-    /* #swagger.parameters['deleteShow'] = {
+    /* #swagger.parameters['VorstellungLöschen'] = {
                in: 'body',
                description: 'Zu entfernende Vorstellung.',
                required: true,

@@ -1,18 +1,12 @@
 {
-  "openapi": "3.0.0",
+  "swagger": "2.0",
   "info": {
     "version": "1.0.0",
     "title": "Fallstudie-Gruppe-3",
     "description": "API Dokumentation zur Anbindung von Frontends für das Kinoticketreservierungssystem."
   },
-  "servers": [
-    {
-      "url": "https://fallstudie-gruppe-3.herokuapp.com/"
-    },
-    {
-      "url": "http://fallstudie-gruppe-3.herokuapp.com/"
-    }
-  ],
+  "host": "fallstudie-gruppe-3.herokuapp.com",
+  "basePath": "/",
   "tags": [
     {
       "name": "Film",
@@ -31,6 +25,23 @@
       "description": "Folgende Endpoints können genutzt werden, um mit der Ressource 'Sitzplatz' zu interagieren."
     }
   ],
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "securityDefinitions": {
+    "bearerAuth": {
+      "type": "http",
+      "scheme": "bearer",
+      "bearerFormat": "JWT"
+    }
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
   "paths": {
     "/filme": {
       "get": {
@@ -42,30 +53,31 @@
         "responses": {
           "200": {
             "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Film"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/Film"
-                }
-              }
+            "schema": {
+              "$ref": "#/definitions/Film"
             }
           },
           "400": {
             "description": "Bad Request"
           }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
+        }
       },
       "post": {
+        "tags": [
+          "Film"
+        ],
+        "description": "Film anlegen.",
+        "parameters": [
+          {
+            "name": "FilmAnlegen",
+            "in": "body",
+            "description": "Anzulegender Film.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/FilmAnlegen"
+            }
+          }
+        ],
         "responses": {
           "201": {
             "description": "Created"
@@ -78,24 +90,6 @@
           {
             "bearerAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "titel": {
-                    "example": "any"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "description": "Film anlegen.",
-        "tags": [
-          "Film"
         ]
       }
     },
@@ -110,9 +104,7 @@
             "name": "titel",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           }
         ],
         "responses": {
@@ -138,12 +130,12 @@
         "description": "Saal anlegen.",
         "parameters": [
           {
-            "name": "newHall",
+            "name": "SaalAnlegen",
             "in": "body",
             "description": "Anzulegender Saal.",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/SaalAnlegen"
+              "$ref": "#/definitions/SaalAnlegen"
             }
           }
         ],
@@ -173,9 +165,7 @@
             "name": "nummer",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           }
         ],
         "responses": {
@@ -195,6 +185,21 @@
     },
     "/sitzplaetze/reservieren": {
       "put": {
+        "tags": [
+          "Sitzplatz"
+        ],
+        "description": "Sitzplatz reservieren.",
+        "parameters": [
+          {
+            "name": "SitzeReservieren",
+            "in": "body",
+            "description": "Zu reservierende Sitze.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SitzeReservieren"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -207,24 +212,6 @@
           {
             "bearerAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "entries": {
-                    "example": "any"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "description": "Sitzplatz reservieren.",
-        "tags": [
-          "Sitzplatz"
         ]
       }
     },
@@ -236,12 +223,12 @@
         "description": "Sitzplatz buchen.",
         "parameters": [
           {
-            "name": "seats",
+            "name": "SitzeBuchen",
             "in": "body",
             "description": "Zu buchende Sitze.",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/SitzeBuchen"
+              "$ref": "#/definitions/SitzeBuchen"
             }
           }
         ],
@@ -262,6 +249,21 @@
     },
     "/sitzplaetze/freigeben": {
       "put": {
+        "tags": [
+          "Sitzplatz"
+        ],
+        "description": "Sitzplatz freigeben.",
+        "parameters": [
+          {
+            "name": "SitzeFreigeben",
+            "in": "body",
+            "description": "Zu freigebende Sitze.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SitzeFreigeben"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -271,29 +273,26 @@
           {
             "bearerAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "entries": {
-                    "example": "any"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "description": "Sitzplatz freigeben.",
-        "tags": [
-          "Sitzplatz"
         ]
       }
     },
     "/vorstellungen": {
       "post": {
+        "tags": [
+          "Vorstellung"
+        ],
+        "description": "Vorstellung anlegen.",
+        "parameters": [
+          {
+            "name": "VorstellungAnlegen",
+            "in": "body",
+            "description": "Anzulegender Film.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/VorstellungAnlegen"
+            }
+          }
+        ],
         "responses": {
           "201": {
             "description": "Created"
@@ -306,112 +305,64 @@
           {
             "bearerAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "film": {
-                    "example": "any"
-                  },
-                  "saal": {
-                    "example": "any"
-                  },
-                  "startzeit": {
-                    "example": "any"
-                  },
-                  "dauer": {
-                    "example": "any"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "description": "Vorstellung anlegen.",
-        "tags": [
-          "Vorstellung"
         ]
       },
       "put": {
+        "tags": [
+          "Vorstellung"
+        ],
+        "description": "Vorstellungen für einen Tag abrufen.",
+        "parameters": [
+          {
+            "name": "VorstellungAbrufen",
+            "in": "body",
+            "description": "Abzurufende Vorstellungen für einen Tag.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/VorstellungenAbrufen"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Vorstellungen"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/Vorstellungen"
-                }
-              }
+            "schema": {
+              "$ref": "#/definitions/Vorstellungen"
             }
           },
           "400": {
             "description": "Bad Request"
           }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "saalnummer": {
-                    "example": "any"
-                  },
-                  "startzeit": {
-                    "example": "any"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "description": "Vorstellungen für einen Tag abrufen.",
-        "tags": [
-          "Vorstellung"
-        ]
+        }
       }
     },
     "/vorstellungen/{saal}/{startzeit}": {
       "delete": {
+        "tags": [
+          "Vorstellung"
+        ],
+        "description": "Vorstellung löschen.",
         "parameters": [
           {
             "name": "saal",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           },
           {
             "name": "startzeit",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "example": "string"
-                }
-              }
-            },
+            "type": "string",
             "description": "Format: 2021-12-19T00:00"
           },
           {
-            "name": "deleteShow",
+            "name": "VorstellungLöschen",
             "in": "body",
             "description": "Zu entfernende Vorstellung.",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/VorstellungLöschen"
+              "$ref": "#/definitions/VorstellungLöschen"
             }
           }
         ],
@@ -427,378 +378,316 @@
           {
             "bearerAuth": []
           }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "film": {
-                    "example": "any"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "description": "Vorstellung löschen.",
-        "tags": [
-          "Vorstellung"
         ]
       }
     }
   },
-  "components": {
-    "schemas": {
-      "Film": {
-        "type": "object",
-        "properties": {
-          "titel": {
-            "type": "string",
-            "example": "Inception"
-          },
-          "bild": {
-            "type": "string",
-            "example": "https://imdb-api.com/images/original/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_Ratio0.6762_AL_.jpg"
-          },
-          "dauer": {
-            "type": "number",
-            "example": 148
-          },
-          "beschreibung": {
-            "type": "string",
-            "example": "Beim Versuch in das Unterbewusstsein des Industriellen Saito einzudringen, stoßen Cobb und seine Mitstreiter auf unerwartete Schwierigkeiten. Saito hatte Verteidigungsstrategien gegen den Gedankendiebstahl trainiert und baut nun einen Abwehrriegel auf, doch erst der Verrat eines Kollegen lässt den Versuch scheitern, dem Schlafenden Geheimnisse zu entlocken. Da seine Auftraggeber unbedingten Erfolg gefordert hatten, muss Cobb, der auf Grund einer drohenden Verurteilung nicht mehr in die USA zurück kann, fliehen, doch Saito kommt ihm zuvor. Allerdings nicht um ihn zu bestrafen, sondern um ihm einen Deal vorzuschlagen."
-          },
-          "trailer": {
-            "type": "string",
-            "example": "https://www.youtube.com/embed/dHTyZ9Bmp0c"
-          },
-          "vorstellungen": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "saal": {
-                  "type": "number",
-                  "example": 1
-                },
-                "startzeit": {
-                  "type": "string",
-                  "example": "2021-12-19T16:00"
-                },
-                "sitzplaetze": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "reihe": {
-                        "type": "string",
-                        "example": "A"
-                      },
-                      "nummer": {
-                        "type": "number",
-                        "example": 1
-                      },
-                      "sitzart": {
-                        "type": "string",
-                        "example": "einzel"
-                      },
-                      "reserviert": {
-                        "type": "boolean",
-                        "example": false
-                      }
+  "definitions": {
+    "Film": {
+      "type": "object",
+      "properties": {
+        "titel": {
+          "type": "string",
+          "example": "Inception"
+        },
+        "bild": {
+          "type": "string",
+          "example": "https://imdb-api.com/images/original/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_Ratio0.6762_AL_.jpg"
+        },
+        "dauer": {
+          "type": "number",
+          "example": 148
+        },
+        "beschreibung": {
+          "type": "string",
+          "example": "Beim Versuch in das Unterbewusstsein des Industriellen Saito einzudringen, stoßen Cobb und seine Mitstreiter auf unerwartete Schwierigkeiten. Saito hatte Verteidigungsstrategien gegen den Gedankendiebstahl trainiert und baut nun einen Abwehrriegel auf, doch erst der Verrat eines Kollegen lässt den Versuch scheitern, dem Schlafenden Geheimnisse zu entlocken. Da seine Auftraggeber unbedingten Erfolg gefordert hatten, muss Cobb, der auf Grund einer drohenden Verurteilung nicht mehr in die USA zurück kann, fliehen, doch Saito kommt ihm zuvor. Allerdings nicht um ihn zu bestrafen, sondern um ihm einen Deal vorzuschlagen."
+        },
+        "trailer": {
+          "type": "string",
+          "example": "https://www.youtube.com/embed/dHTyZ9Bmp0c"
+        },
+        "vorstellungen": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "saal": {
+                "type": "number",
+                "example": 1
+              },
+              "startzeit": {
+                "type": "string",
+                "example": "2021-12-19T16:00"
+              },
+              "sitzplaetze": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "reihe": {
+                      "type": "string",
+                      "example": "A"
+                    },
+                    "nummer": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "sitzart": {
+                      "type": "string",
+                      "example": "einzel"
+                    },
+                    "reserviert": {
+                      "type": "boolean",
+                      "example": false
                     }
                   }
                 }
               }
             }
           }
-        },
-        "xml": {
-          "name": "Film"
+        }
+      }
+    },
+    "FilmAnlegen": {
+      "type": "object",
+      "properties": {
+        "titel": {
+          "type": "string",
+          "example": "Django Unchained"
         }
       },
-      "FilmAnlegen": {
+      "required": [
+        "titel"
+      ]
+    },
+    "SaalAnlegen": {
+      "type": "object",
+      "properties": {
+        "nummer": {
+          "type": "number",
+          "example": 1
+        },
+        "sitzplaetze": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "reihe": {
+                "type": "string",
+                "example": "A"
+              },
+              "nummer": {
+                "type": "number",
+                "example": 1
+              },
+              "sitzart": {
+                "type": "string",
+                "example": "einzel"
+              },
+              "reserviert": {
+                "type": "boolean",
+                "example": false
+              }
+            },
+            "required": [
+              "reihe",
+              "nummer",
+              "sitzart",
+              "reserviert"
+            ]
+          }
+        }
+      },
+      "required": [
+        "nummer",
+        "sitzplaetze"
+      ]
+    },
+    "Vorstellungen": {
+      "type": "array",
+      "items": {
         "type": "object",
         "properties": {
           "titel": {
             "type": "string",
             "example": "Django Unchained"
-          }
-        },
-        "required": [
-          "titel"
-        ],
-        "xml": {
-          "name": "FilmAnlegen"
-        }
-      },
-      "SaalAnlegen": {
-        "type": "object",
-        "properties": {
-          "nummer": {
-            "type": "number",
-            "example": 1
-          },
-          "sitzplaetze": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "reihe": {
-                  "type": "string",
-                  "example": "A"
-                },
-                "nummer": {
-                  "type": "number",
-                  "example": 1
-                },
-                "sitzart": {
-                  "type": "string",
-                  "example": "einzel"
-                },
-                "reserviert": {
-                  "type": "boolean",
-                  "example": false
-                }
-              },
-              "required": [
-                "reihe",
-                "nummer",
-                "sitzart",
-                "reserviert"
-              ]
-            }
-          }
-        },
-        "required": [
-          "nummer",
-          "sitzplaetze"
-        ],
-        "xml": {
-          "name": "SaalAnlegen"
-        }
-      },
-      "Vorstellungen": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "titel": {
-              "type": "string",
-              "example": "Django Unchained"
-            },
-            "startzeit": {
-              "type": "string",
-              "example": "2021-12-19T13:00"
-            }
-          }
-        },
-        "xml": {
-          "name": "Vorstellungen"
-        }
-      },
-      "VorstellungenAbrufen": {
-        "type": "object",
-        "properties": {
-          "saalnummer": {
-            "type": "number",
-            "example": 1
           },
           "startzeit": {
             "type": "string",
-            "example": "2021-12-19T00:00"
+            "example": "2021-12-19T13:00"
           }
+        }
+      }
+    },
+    "VorstellungenAbrufen": {
+      "type": "object",
+      "properties": {
+        "saalnummer": {
+          "type": "number",
+          "example": 1
         },
-        "required": [
-          "saalnummer",
-          "startzeit"
-        ],
-        "xml": {
-          "name": "VorstellungenAbrufen"
+        "startzeit": {
+          "type": "string",
+          "example": "2021-12-19T00:00"
         }
       },
-      "VorstellungAnlegen": {
+      "required": [
+        "saalnummer",
+        "startzeit"
+      ]
+    },
+    "VorstellungAnlegen": {
+      "type": "object",
+      "properties": {
+        "saal": {
+          "type": "number",
+          "example": 1
+        },
+        "startzeit": {
+          "type": "string",
+          "example": "2021-12-19T00:00"
+        },
+        "film": {
+          "type": "string",
+          "example": "Inception"
+        }
+      },
+      "required": [
+        "saal",
+        "startzeit",
+        "film"
+      ]
+    },
+    "VorstellungLöschen": {
+      "type": "object",
+      "properties": {
+        "film": {
+          "type": "string",
+          "example": "Inception"
+        }
+      },
+      "required": [
+        "film"
+      ]
+    },
+    "SitzeReservieren": {
+      "type": "array",
+      "items": {
         "type": "object",
         "properties": {
+          "titel": {
+            "type": "string",
+            "example": "Spider-Man: No Way Home"
+          },
           "saal": {
             "type": "number",
             "example": 1
           },
           "startzeit": {
             "type": "string",
-            "example": "2021-12-19T00:00"
+            "example": "2022-01-05T12:30"
           },
-          "film": {
+          "reihe": {
             "type": "string",
-            "example": "Inception"
+            "example": "A"
           },
-          "dauer": {
+          "nummer": {
             "type": "number",
-            "example": 148
+            "example": 15
+          },
+          "wert": {
+            "type": "string",
+            "example": "rauth0|userId"
           }
         },
         "required": [
+          "titel",
           "saal",
           "startzeit",
-          "film",
-          "dauer"
-        ],
-        "xml": {
-          "name": "VorstellungAnlegen"
-        }
-      },
-      "VorstellungLöschen": {
+          "reihe",
+          "nummer",
+          "wert"
+        ]
+      }
+    },
+    "SitzeBuchen": {
+      "type": "array",
+      "items": {
         "type": "object",
         "properties": {
-          "film": {
+          "titel": {
             "type": "string",
-            "example": "Inception"
+            "example": "Spider-Man: No Way Home"
+          },
+          "saal": {
+            "type": "number",
+            "example": 1
+          },
+          "startzeit": {
+            "type": "string",
+            "example": "2022-01-05T12:30"
+          },
+          "reihe": {
+            "type": "string",
+            "example": "A"
+          },
+          "nummer": {
+            "type": "number",
+            "example": 15
+          },
+          "wert": {
+            "type": "string",
+            "example": "auth0|userId"
           }
         },
         "required": [
-          "film"
-        ],
-        "xml": {
-          "name": "VorstellungLöschen"
-        }
-      },
-      "SitzeReservieren": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "titel": {
-              "type": "string",
-              "example": "Spider-Man: No Way Home"
-            },
-            "saal": {
-              "type": "number",
-              "example": 1
-            },
-            "startzeit": {
-              "type": "string",
-              "example": "2022-01-05T12:30"
-            },
-            "reihe": {
-              "type": "string",
-              "example": "A"
-            },
-            "nummer": {
-              "type": "number",
-              "example": 15
-            },
-            "wert": {
-              "type": "string",
-              "example": "rauth0|userId"
-            }
-          },
-          "required": [
-            "titel",
-            "saal",
-            "startzeit",
-            "reihe",
-            "nummer",
-            "wert"
-          ]
-        },
-        "xml": {
-          "name": "SitzeReservieren"
-        }
-      },
-      "SitzeBuchen": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "titel": {
-              "type": "string",
-              "example": "Spider-Man: No Way Home"
-            },
-            "saal": {
-              "type": "number",
-              "example": 1
-            },
-            "startzeit": {
-              "type": "string",
-              "example": "2022-01-05T12:30"
-            },
-            "reihe": {
-              "type": "string",
-              "example": "A"
-            },
-            "nummer": {
-              "type": "number",
-              "example": 15
-            },
-            "wert": {
-              "type": "string",
-              "example": "auth0|userId"
-            }
-          },
-          "required": [
-            "titel",
-            "saal",
-            "startzeit",
-            "reihe",
-            "nummer",
-            "wert"
-          ]
-        },
-        "xml": {
-          "name": "SitzeBuchen"
-        }
-      },
-      "SitzeFreigeben": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "titel": {
-              "type": "string",
-              "example": "Spider-Man: No Way Home"
-            },
-            "saal": {
-              "type": "number",
-              "example": 1
-            },
-            "startzeit": {
-              "type": "string",
-              "example": "2022-01-05T12:30"
-            },
-            "reihe": {
-              "type": "string",
-              "example": "A"
-            },
-            "nummer": {
-              "type": "number",
-              "example": 15
-            },
-            "wert": {
-              "type": "string",
-              "example": "rauth0|userId"
-            }
-          },
-          "required": [
-            "titel",
-            "saal",
-            "startzeit",
-            "reihe",
-            "nummer",
-            "wert"
-          ]
-        },
-        "xml": {
-          "name": "SitzeFreigeben"
-        }
+          "titel",
+          "saal",
+          "startzeit",
+          "reihe",
+          "nummer",
+          "wert"
+        ]
       }
     },
-    "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer",
-        "bearerFormat": "JWT"
+    "SitzeFreigeben": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "titel": {
+            "type": "string",
+            "example": "Spider-Man: No Way Home"
+          },
+          "saal": {
+            "type": "number",
+            "example": 1
+          },
+          "startzeit": {
+            "type": "string",
+            "example": "2022-01-05T12:30"
+          },
+          "reihe": {
+            "type": "string",
+            "example": "A"
+          },
+          "nummer": {
+            "type": "number",
+            "example": 15
+          },
+          "wert": {
+            "type": "string",
+            "example": "rauth0|userId"
+          }
+        },
+        "required": [
+          "titel",
+          "saal",
+          "startzeit",
+          "reihe",
+          "nummer",
+          "wert"
+        ]
       }
     }
   }
