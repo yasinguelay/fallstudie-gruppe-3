@@ -4,6 +4,8 @@ require('dotenv').config({ path: './config.env' });
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const checkJwt = require('./middleware/authz.middleware');
+const checkPermissions = require('./middleware/permissions.middleware');
 // get MongoDB driver connection
 const dbo = require('./db/conn');
 const swaggerUi = require('swagger-ui-express');
@@ -20,6 +22,13 @@ app.use(require('./routes/filme'));
 app.use(require('./routes/vorstellungen'));
 app.use(require('./routes/sitzplaetze'));
 app.use(require('./routes/saele'));
+app.get(
+  '/admin',
+  [checkJwt, checkPermissions('alter:cinema')],
+  function (req, res) {
+    res.send('Noch zu implementieren');
+  }
+);
 app.get('/*', function (req, res) {
   res.sendFile(path.join(__dirname, 'app/build', 'index.html'));
 });

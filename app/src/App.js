@@ -649,7 +649,7 @@ function App() {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav style={{ flexBasis: 0 }} className="me-auto flex-grow-1 justify-content-center">
               <Nav.Link href="/">Programm</Nav.Link>
-              {/* {user?.['https://fallstudie-gruppe-3.herokuapp.com/roles'][0] === 'cinema-admin' ? <Nav.Link href="admin">Admin</Nav.Link> : null}  */}
+              {user?.['https://fallstudie-gruppe-3.herokuapp.com/roles'][0] === 'cinema-admin' ? <Nav.Link href="admin">Admin</Nav.Link> : null} 
             </Nav>
           </Navbar.Collapse>
         </Container>
