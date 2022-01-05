@@ -1,5 +1,6 @@
 const checkJwt = require('../middleware/authz.middleware');
 const checkPermissions = require('../middleware/permissions.middleware');
+const { google } = require('googleapis');
 const express = require('express');
 const fetch = require('node-fetch');
 const dbo = require('../db/conn');
@@ -47,6 +48,10 @@ movies
 
       const dbConnect = dbo.getDb();
       const newMovieToInsert = { titel: req.body.titel };
+      const youtube = google.youtube({
+        version: 'v3',
+        auth: process.env.YOUTUBE_API,
+      });
 
       try {
         const responseImdbSearchMovie = await fetch(
@@ -64,6 +69,21 @@ movies
             resultsImdbSearchMovie.results[0].id
         );
 
+        const responseYoutubeSearchMovie = await youtube.search.list({
+          part: 'snippet',
+          q: req.body.titel.toLowerCase() + ' trailer deutsch',
+        });
+
+        console.log(responseYoutubeSearchMovie);
+
+        if (responseYoutubeSearchMovie.data?.items?.[0]?.id?.videoId) {
+          newMovieToInsert.trailer =
+            'https://www.youtube.com/embed/' +
+            responseYoutubeSearchMovie.data.items[0].id.videoId;
+        } else {
+          newMovieToInsert.trailer = '';
+        }
+
         if (responseImdbTitle.ok) {
           const resultsImdbTitle = await responseImdbTitle.json();
           newMovieToInsert.bild = resultsImdbTitle.image;
@@ -73,7 +93,6 @@ movies
             'Momentan gibt es keine deutsche Übersetzung. Unterstütze uns indem du eine hinzufügst.'
               ? resultsImdbTitle.plot
               : resultsImdbTitle.plotLocal;
-          newMovieToInsert.trailer = '';
           newMovieToInsert.vorstellungen = [];
         } else {
           res.status(400).send('Film konnte nicht angelegt werden!');
