@@ -237,7 +237,7 @@ seats
       pk1AdultPrice * req.body.pkAuswahl.erwachsener1 +
       pk2AdultPrice * req.body.pkAuswahl.erwachsener2;
 
-    for (const [index, ticket] of req.body.sitzpletze.entries()) {
+    for (const [index, ticket] of req.body.sitzplaetze.entries()) {
       tickets += `${index + 1}) Reihe: ${ticket.reihe}, Nummer: ${
         ticket.nummer
       }\n`;
@@ -257,7 +257,7 @@ seats
       // send mail with defined transport object
       let info = await transporter.sendMail({
         from: '"Fallstudie Gruppe 3" <fallstudie.gruppe.3@gmail.com>', // sender address
-        to: req.body.kunde.vorname, // list of receivers
+        to: req.body.kunde.email, // list of receivers
         subject: 'Buchungsbestätigung', // Subject line
         text:
           `Hallo ${
