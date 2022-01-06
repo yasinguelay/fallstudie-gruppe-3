@@ -1069,7 +1069,7 @@ const handleAdminClick = (e) => {
                     <Row>
                       <Col>
                         <div className='fw-bold mb-3'>Ihre Daten:</div>
-                        <CheckoutForm bookingModalShow={bookingModalShow} setBookingModalShow={setBookingModalShow} chosenSeatsToBook = {chosenSeatsToBook} onHide={handleBookingModalHide} totalAmount={(pk1ChildAmount * pk1ChildPrice + pk2ChildAmount * pk2ChildPrice + pk1AdultAmount * pk1AdultPrice + pk2AdultAmount * pk2AdultPrice)} checkBoxToggled={checkBoxToggled} setFetchResult={setFetchResult} />
+                        <CheckoutForm bookingModalShow={bookingModalShow} setBookingModalShow={setBookingModalShow} chosenSeatsToBook = {chosenSeatsToBook} onHide={handleBookingModalHide} totalSeatsAmount={{pk1ChildAmount: pk1ChildAmount, pk2ChildAmount: pk2ChildAmount, pk1AdultAmount: pk1AdultAmount, pk2AdultAmount: pk2AdultAmount}} checkBoxToggled={checkBoxToggled} setFetchResult={setFetchResult} />
                       </Col>
                       <Col xs={6} className='ps-5'>
                         <Row className='mb-2'>

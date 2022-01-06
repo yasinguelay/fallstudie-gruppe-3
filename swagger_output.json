@@ -619,44 +619,61 @@
         }
       },
       "SitzeBuchen": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "titel": {
-              "type": "string",
-              "example": "Spider-Man: No Way Home"
-            },
-            "saal": {
-              "type": "number",
-              "example": 1
-            },
-            "startzeit": {
-              "type": "string",
-              "example": "2022-01-05T12:30"
-            },
-            "reihe": {
-              "type": "string",
-              "example": "A"
-            },
-            "nummer": {
-              "type": "number",
-              "example": 15
-            },
-            "wert": {
-              "type": "string",
-              "example": "auth0|userId"
-            }
+        "type": "object",
+        "properties": {
+          "sitzplaetze": {
+            "$ref": "#/components/schemas/SitzeReservieren"
           },
-          "required": [
-            "titel",
-            "saal",
-            "startzeit",
-            "reihe",
-            "nummer",
-            "wert"
-          ]
-        }
+          "kunde": {
+            "type": "object",
+            "properties": {
+              "vorname": {
+                "type": "string",
+                "example": "Test"
+              },
+              "email": {
+                "type": "string",
+                "example": "test@email.com"
+              }
+            },
+            "required": [
+              "vorname",
+              "email"
+            ]
+          },
+          "pkAuswahl": {
+            "type": "object",
+            "properties": {
+              "kind1": {
+                "type": "number",
+                "example": 1
+              },
+              "kind2": {
+                "type": "number",
+                "example": 2
+              },
+              "erwachsener1": {
+                "type": "number",
+                "example": 3
+              },
+              "erwachsener2": {
+                "type": "number",
+                "example": 4
+              }
+            },
+            "required": [
+              "kind1",
+              "kind2",
+              "erwachsener1",
+              "erwachsener2"
+            ]
+          }
+        },
+        "required": [
+          "sitzplaetze",
+          "kunde",
+          "pkAuswahl"
+        ]
       },
       "SitzeFreigeben": {
         "type": "array",

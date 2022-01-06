@@ -34,7 +34,7 @@ export function CheckoutForm(props) {
                   Authorization: `Bearer ${res}`,
                   'Content-Type': 'application/json'
                 },
-                body: JSON.stringify([props.chosenSeatsToBook.map(e => ({...e, wert: 'r' + user.sub})), props.totalAmount, document.getElementById('Vorname').value, document.getElementById('E-Mail').value])
+                body: JSON.stringify({ sitzplaetze: props.chosenSeatsToBook.map(e => ({...e, wert: 'r' + user.sub})), kunde: {vorname: document.getElementById('Vorname').value, email: document.getElementById('E-Mail').value}, pkAuswahl: {kind1: props.totalSeatsAmount.pk1ChildAmount, kind2: props.totalSeatsAmount.pk2ChildAmount, erwachsener1: props.totalSeatsAmount.pk1AdultAmount, erwachsener2: props.totalSeatsAmount.pk2AdultAmount} })
               })
                 .then((result) => {
                   if (!result.ok) {

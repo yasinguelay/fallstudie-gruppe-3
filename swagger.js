@@ -109,16 +109,19 @@ const doc = {
         $wert: 'rauth0|userId',
       },
     ],
-    SitzeBuchen: [
-      {
-        $titel: 'Spider-Man: No Way Home',
-        $saal: 1,
-        $startzeit: '2022-01-05T12:30',
-        $reihe: 'A',
-        $nummer: 15,
-        $wert: 'auth0|userId',
+    SitzeBuchen: {
+      $sitzplaetze: { $ref: '#/definitions/SitzeReservieren' },
+      $kunde: {
+        $vorname: 'Test',
+        $email: 'test@email.com',
       },
-    ],
+      $pkAuswahl: {
+        $kind1: 1,
+        $kind2: 2,
+        $erwachsener1: 3,
+        $erwachsener2: 4,
+      },
+    },
     SitzeFreigeben: [
       {
         $titel: 'Spider-Man: No Way Home',

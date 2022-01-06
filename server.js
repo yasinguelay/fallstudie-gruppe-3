@@ -17,7 +17,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'app/build')));
-app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile));
+app.use('/api', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 app.use(require('./routes/filme'));
 app.use(require('./routes/vorstellungen'));
 app.use(require('./routes/sitzplaetze'));

@@ -153,7 +153,12 @@ seats
 
     const dbConnect = dbo.getDb();
 
-    for (const [index, seat] of req.body[0].entries()) {
+    const pk1AdultPrice = 11.9;
+    const pk1ChildPrice = 9.9;
+    const pk2AdultPrice = 12.9;
+    const pk2ChildPrice = 9.9;
+
+    for (const [index, seat] of req.body.sitzplaetze.entries()) {
       const seatToReserve = {
         titel: seat.titel,
       };
@@ -226,8 +231,13 @@ seats
     }
 
     let tickets = '';
+    let price =
+      pk1ChildPrice * req.body.pkAuswahl.kind1 +
+      pk2ChildPrice * req.body.pkAuswahl.kind2 +
+      pk1AdultPrice * req.body.pkAuswahl.erwachsener1 +
+      pk2AdultPrice * req.body.pkAuswahl.erwachsener2;
 
-    for (const [index, ticket] of req.body[0].entries()) {
+    for (const [index, ticket] of req.body.sitzpletze.entries()) {
       tickets += `${index + 1}) Reihe: ${ticket.reihe}, Nummer: ${
         ticket.nummer
       }\n`;
@@ -247,15 +257,15 @@ seats
       // send mail with defined transport object
       let info = await transporter.sendMail({
         from: '"Fallstudie Gruppe 3" <fallstudie.gruppe.3@gmail.com>', // sender address
-        to: req.body[3], // list of receivers
+        to: req.body.kunde.vorname, // list of receivers
         subject: 'Buchungsbestätigung', // Subject line
         text:
           `Hallo ${
-            req.body[2]
+            req.body.kunde.vorname
           },\n\nmit dieser E-Mail erhältst Du Deine Tickets für folgende Vorstellung:\n\nFilm: ${
-            req.body[0][0].titel
-          }, Saal: ${req.body[0][0].saal}, Datum: ${new Date(
-            req.body[0][0].startzeit
+            req.body.sitzplaetze[0].titel
+          }, Saal: ${req.body.sitzplaetze[0].saal}, Datum: ${new Date(
+            req.body.sitzplaetze[0].startzeit
           ).toLocaleString('de-DE', {
             weekday: 'long',
             year: 'numeric',
@@ -263,7 +273,7 @@ seats
             day: '2-digit',
             hour: '2-digit',
             minute: '2-digit',
-          })}\n\nBitte begleiche den offenen Betrag von ${req.body[1].toLocaleString(
+          })}\n\nBitte begleiche den offenen Betrag von ${price.toLocaleString(
             undefined,
             { minimumFractionDigits: 2 }
           )} € vor Ort.\n\nDeine Tickets:\n\n` +
