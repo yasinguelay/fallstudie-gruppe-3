@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "start": "node swagger.js",
+    "start": "(npm run coverage); (cd app && npm install && npm run build); (node swagger.js)",
     "dev": "nodemon server.js",
     "swagger-autogen": "node swagger.js",
     "test": "mocha --timeout 10000 --exit",
@@ -11,7 +11,7 @@
     "lint": "eslint .",
     "format": "prettier --single-quote --check .",
     "prepare": "husky install .husky",
-    "postinstall": "(npm run coverage); (cd app && npm install && npm run build)"
+    "postinstall": ""
   },
   "dependencies": {
     "config": "^3.3.6",
