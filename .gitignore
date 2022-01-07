@@ -4,3 +4,7 @@ node_modules
 
 # Documentation
 doc/
+
+# Code Coverage
+coverage/
+.nyc_output/

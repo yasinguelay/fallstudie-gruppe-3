@@ -79,8 +79,6 @@ movies
           q: req.body.titel.toLowerCase() + ' trailer deutsch',
         });
 
-        console.log(responseYoutubeSearchMovie);
-
         if (responseYoutubeSearchMovie.data?.items?.[0]?.id?.videoId) {
           newMovieToInsert.trailer =
             'https://www.youtube.com/embed/' +

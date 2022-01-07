@@ -17,6 +17,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'app/build')));
+app.use(
+  '/api/coverage',
+  express.static(path.join(__dirname, 'coverage/lcov-report'))
+);
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 app.use(require('./routes/filme'));
 app.use(require('./routes/vorstellungen'));
@@ -49,5 +53,9 @@ dbo.connectToServer(function (err) {
   // start the Express server
   app.listen(PORT, () => {
     console.log(`Server is running on port: ${PORT}`);
+    app.emit('app_started');
   });
 });
+
+module.exports = app;
+module.exports.dbo = dbo;

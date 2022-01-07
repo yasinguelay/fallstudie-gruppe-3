@@ -1,5 +1,6 @@
+const config = require('config');
 const { MongoClient } = require('mongodb');
-const connectionString = process.env.ATLAS_URI;
+const connectionString = config.get('connectionString');
 const client = new MongoClient(connectionString, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -14,7 +15,7 @@ module.exports = {
         return callback(err);
       }
 
-      dbConnection = db.db('fallstudie-gruppe-3');
+      dbConnection = db.db(config.get('dbName'));
       console.log('Successfully connected to MongoDB.');
 
       return callback();
