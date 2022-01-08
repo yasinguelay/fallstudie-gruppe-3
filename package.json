@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "start": "(npm run coverage) && (cd app && npm install && npm run build) && (cd.. && node swagger.js)",
+    "start": "npm run coverage && cd app && npm install && npm run build && cd .. && node swagger.js",
     "dev": "nodemon server.js",
     "swagger-autogen": "node swagger.js",
     "test": "mocha --timeout 10000 --exit",

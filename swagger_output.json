@@ -43,7 +43,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "aplication/json": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Film"
                 }
@@ -304,7 +304,7 @@
         "responses": {
           "200": {
             "description": "OK",
-            "ceontent": {
+            "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Vorstellungen"
@@ -346,17 +346,11 @@
           {
             "name": "startzeit",
             "in": "path",
+            "description": "Format: 2021-12-19T00:00",
             "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "example": "string"
-                }
-              }
-            },
-            "description": "Format: 2021-12-19T00:00"
+              "type": "string"
+            }
           }
         ],
         "responses": {

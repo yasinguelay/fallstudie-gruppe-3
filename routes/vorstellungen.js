@@ -18,7 +18,7 @@ shows
                 }
         } */
     /* #swagger.responses[200] = { 
-               ceontent: {
+               content: {
                  "application/json": {
                    schema: { $ref: "#/definitions/Vorstellungen" }
                  }
@@ -222,6 +222,12 @@ shows
   .delete([checkJwt, checkPermissions('alter:cinema')], function (req, res) {
     // #swagger.tags = ['Vorstellung']
     // #swagger.description = 'Vorstellung löschen.'
+    /* #swagger.parameters = { 
+               in: 'path',
+               name: 'startzeit',
+               type: 'string',
+               description: 'Format: 2021-12-19T00:00',
+        } */
     /* #swagger.requestBody = {
                required: true,
                content: {
@@ -229,10 +235,6 @@ shows
                    schema: { $ref: "#/definitions/VorstellungLöschen" }
                  }
                 }
-        } */
-
-    /* #swagger.parameters['startzeit'] = { 
-               description: 'Format: 2021-12-19T00:00'
         } */
 
     // #swagger.security = [{bearerAuth: []}]

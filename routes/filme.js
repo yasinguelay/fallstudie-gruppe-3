@@ -14,7 +14,7 @@ movies
 
     /* #swagger.responses[200] = { 
                content: {
-                 "aplication/json": {
+                 "application/json": {
                     schema: { $ref: "#/definitions/Film" }
                  }
                }  
