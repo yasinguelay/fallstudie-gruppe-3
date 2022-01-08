@@ -30,4 +30,13 @@ jobs:
         cache: 'npm'
     - run: npm ci
     - run: npm run build --if-present
-    - run: npm test
+    - env:
+        AUTH0_AUDIENCE: ${{ secrets.AUTH0_AUDIENCE }}
+        AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
+        ATLAS_URI: ${{ secrets.ATLAS_URI }}
+        ATLAS_URI_TEST: ${{ secrets.ATLAS_URI_TEST }}
+        EMAIL_USER: ${{ secrets.EMAIL_USER }}
+        EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+        IMDB_API: ${{ secrets.IMDB_API }}
+        YOUTUBE_API: ${{ secrets.YOUTUBE_API }}
+      run: npm test

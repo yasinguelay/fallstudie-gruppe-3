@@ -51,15 +51,16 @@ describe('Movie', () => {
       });
   });
 
-  describe('/POST book', () => {
+  describe('/POST movie', () => {
     it('it should POST a movie', (done) => {
         const movie = {
             titel: "Spider-Man: No Way Home",
         }
-      chai.request(server)
+      
+        chai.request(server)
           .post('/filme')
-          .set('Authorization', 'Bearer ' + token)
           .send(movie)
+          .set('Authorization', 'Bearer ' + token)
           .end((err, res) => {
                 res.status.should.be.oneOf([201, 400]);
             done();
