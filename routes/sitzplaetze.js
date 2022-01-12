@@ -198,7 +198,7 @@ seats
       if (result.modifiedCount === 0) {
         for (let i = 0; i < index; i++) {
           const seatToUndo = {
-            titel: req.body[i].titel,
+            titel: req.body.sitzplaetze[i].titel,
           };
 
           const undoQuery = {
@@ -210,12 +210,12 @@ seats
           const undoArrayFilters = {
             arrayFilters: [
               {
-                'i.saal': req.body[i].saal,
-                'i.startzeit': req.body[i].startzeit,
+                'i.saal': req.body.sitzplaetze[i].saal,
+                'i.startzeit': req.body.sitzplaetze[i].startzeit,
               },
               {
-                'j.reihe': req.body[i].reihe,
-                'j.nummer': req.body[i].nummer,
+                'j.reihe': req.body.sitzplaetze[i].reihe,
+                'j.nummer': req.body.sitzplaetze[i].nummer,
               },
             ],
           };
@@ -224,7 +224,6 @@ seats
             .collection('film')
             .updateOne(seatToUndo, undoQuery, undoArrayFilters);
         }
-
         res.status(400).send('Already blocked');
         return;
       }
