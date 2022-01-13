@@ -89,7 +89,10 @@ movies
 
         if (responseImdbTitle.ok) {
           const resultsImdbTitle = await responseImdbTitle.json();
-          newMovieToInsert.bild = resultsImdbTitle.image;
+          newMovieToInsert.bild = resultsImdbTitle.image.replace(
+            '/original/',
+            '/250x371/'
+          );
           newMovieToInsert.dauer = parseInt(resultsImdbTitle.runtimeMins);
           newMovieToInsert.beschreibung =
             resultsImdbTitle.plotLocal ===
