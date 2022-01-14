@@ -29,7 +29,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm ci
-    - run: npm run build --if-present
+    # - run: npm run build --if-present
     - env:
         AUTH0_AUDIENCE: ${{ secrets.AUTH0_AUDIENCE }}
         AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}

@@ -135,6 +135,4 @@ const doc = {
   },
 };
 
-swaggerAutogen(outputFile, endpointsFiles, doc).then(() => {
-  require('./server.js');
-});
+swaggerAutogen(outputFile, endpointsFiles, doc);
