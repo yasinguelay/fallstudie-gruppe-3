@@ -17,6 +17,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'app/build')));
+app.use('/docs', express.static(path.join(__dirname, 'docs/public')));
 app.use(
   '/api/coverage',
   express.static(path.join(__dirname, 'coverage/lcov-report'))
